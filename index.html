@@ -11,7 +11,7 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f3; min-height: 100vh; }
-  #app { width: 100%; max-width: 420px; margin: 0 auto; padding: env(safe-area-inset-top, 1.5rem) 1rem 2rem; }
+  #app { width: 100%; max-width: 420px; margin: 0 auto; padding: env(safe-area-inset-top, 2rem) 1rem 2rem; padding-top: max(env(safe-area-inset-top), 1.5rem); }
   @media (min-width: 768px) {
     body { display: flex; flex-direction: column; align-items: center; padding: 2.5rem 2rem; }
     #app { max-width: 960px; width: 100%; padding: 0; }
@@ -25,7 +25,7 @@
     .footer { grid-column: 1 / -1; text-align: center; padding-top: 0.5rem; }
   }
   .desktop-sub { display: none; text-align: center; font-size: 13px; color: #888; margin-bottom: 2rem; }
-  h1 { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; color: #1a1a1a; text-align: center; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 1.5rem; margin-top: 1rem; color: #1a1a1a; text-align: center; }
   .card { background: #fff; border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
   .row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
   .day-label { font-size: 12px; color: #888; margin-bottom: 2px; }
