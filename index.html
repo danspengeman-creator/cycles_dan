@@ -11,7 +11,7 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f3; min-height: 100vh; }
-  #app { width: 100%; max-width: 420px; margin: 0 auto; padding: env(safe-area-inset-top, 2rem) 1rem 2rem; padding-top: max(env(safe-area-inset-top), 1.5rem); }
+  #app { width: 100%; max-width: 420px; margin: 0 auto; padding: 1.5rem 1rem 2rem; padding-top: max(1.5rem, env(safe-area-inset-top)); }
   @media (min-width: 768px) {
     body { display: flex; flex-direction: column; align-items: center; padding: 2.5rem 2rem; }
     #app { max-width: 960px; width: 100%; padding: 0; }
@@ -58,17 +58,20 @@
   .chip-month { font-size: 11px; color: #888; margin-bottom: 6px; }
   .chip-label { font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 20px; display: inline-block; }
   .chip-peak-dot { font-size: 10px; margin-top: 4px; animation: pulse 1.8s ease-in-out infinite; }
+
+  /* Calendar */
   .cal-wrap { background: #fff; border-radius: 16px; border: 1px solid #e5e5e5; padding: 1.25rem; margin-bottom: 1rem; }
-  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 8px; }
-  .cal-nav { background: none; border: 0.5px solid #ddd; border-radius: 8px; padding: 4px 14px; cursor: pointer; font-size: 18px; color: #666; flex-shrink: 0; line-height: 1.4; }
-  .cal-title-wrap { text-align: center; flex: 1; min-width: 0; }
-  .cal-title { font-size: 13px; font-weight: 500; color: #1a1a1a; }
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .cal-nav { background: none; border: 0.5px solid #ddd; border-radius: 8px; width: 36px; height: 36px; cursor: pointer; font-size: 18px; color: #666; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cal-nav:disabled { opacity: 0.3; cursor: default; }
+  .cal-title-wrap { text-align: center; flex: 1; }
+  .cal-title { font-size: 14px; font-weight: 500; color: #1a1a1a; }
   .cal-estimate { font-size: 10px; color: #aaa; margin-top: 2px; }
-  .cal-hint { font-size: 10px; color: #bbb; text-align: center; margin-top: 8px; margin-bottom: 4px; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
-  .cal-dow { font-size: 10px; color: #aaa; text-align: center; padding-bottom: 4px; text-transform: uppercase; }
-  .cal-day { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #1a1a1a; position: relative; cursor: pointer; transition: filter 0.15s; }
-  .cal-day:hover { filter: brightness(0.9); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .cal-dow { font-size: 11px; color: #aaa; text-align: center; padding-bottom: 6px; text-transform: uppercase; font-weight: 500; }
+  .cal-day { aspect-ratio: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #1a1a1a; position: relative; cursor: pointer; transition: filter 0.15s; font-weight: 400; }
+  .cal-day:active { filter: brightness(0.85); }
+  @media (hover: hover) { .cal-day:hover { filter: brightness(0.9); } }
   .cal-day.today { font-weight: 700; outline: 2px solid #1a1a1a; outline-offset: -2px; }
   .cal-day.peak { background: #D85A30; color: #fff; font-weight: 600; }
   .cal-day.rising { background: #1D9E7522; color: #0f6e56; font-weight: 500; border: 1px solid #1D9E7544; }
@@ -76,9 +79,11 @@
   .cal-day.low { background: #f5f5f3; color: #bbb; }
   .cal-day.sex { background: #fff0f8; border: 1px solid #e8a0cc; }
   .cal-day.last-chance { background: #fff8e6; color: #8a6000; border: 2px solid #f0b429; font-weight: 600; }
-  .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 0.5px solid #f0f0ee; }
+  .cal-hint { font-size: 10px; color: #ccc; text-align: center; margin-top: 10px; margin-bottom: 10px; }
+  .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; border-top: 0.5px solid #f0f0ee; }
   .cal-legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #888; }
   .cal-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
   .footer { font-size: 11px; color: #bbb; text-align: center; margin-top: 1rem; }
   .footer a { color: #bbb; cursor: pointer; text-decoration: underline; }
   .loading { text-align: center; padding: 3rem 0; color: #888; font-size: 14px; }
@@ -168,7 +173,6 @@ const PHASES = [
 ];
 
 function getPhase(day, len) { return PHASES.find(p => day/len <= p.maxPct) || PHASES[4]; }
-
 function getPhaseRange(phase, len) {
   const idx = PHASES.indexOf(phase);
   const prev = idx > 0 ? PHASES[idx-1] : null;
@@ -176,24 +180,20 @@ function getPhaseRange(phase, len) {
   const end = Math.min(Math.floor(phase.maxPct * len), len);
   return "Days " + start + "\u2013" + end;
 }
-
 function parseISOLocal(str) {
   const [y,m,d] = str.split("-").map(Number);
   return new Date(y, m-1, d);
 }
-
 function cycleDay(last, len) {
   const diff = Math.floor((Date.now() - parseISOLocal(last).getTime()) / 86400000);
   return (diff % len) + 1;
 }
-
 function avgLen(dates) {
   if (dates.length < 2) return 28;
   const s = dates.map(d => parseISOLocal(d)).sort((a,b) => a-b);
   let t = 0; for (let i=1; i<s.length; i++) t += (s[i]-s[i-1])/86400000;
   return Math.round(t/(s.length-1));
 }
-
 function getBestDays(day, len) {
   const out = [];
   for (let o=0; o<=len && out.length<3; o++) {
@@ -205,12 +205,10 @@ function getBestDays(day, len) {
   }
   return out;
 }
-
 function getNextPeriod(day, len) {
   const du = len-day+1, dt = new Date(); dt.setDate(dt.getDate()+du);
   return { daysUntil:du, dateStr:dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}) };
 }
-
 function classifyDay(d, len) {
   if (d <= 5) return "period";
   const p = d/len;
@@ -219,29 +217,13 @@ function classifyDay(d, len) {
   if (p<=0.86) return "neutral";
   return "low";
 }
-
 function getCycleDay(calDay, month, year, last, len) {
   const diff = Math.floor((new Date(year,month,calDay) - parseISOLocal(last)) / 86400000);
   return ((diff % len) + len) % len + 1;
 }
-
 function getDayType(calDay, month, year, last, len) {
   return classifyDay(getCycleDay(calDay, month, year, last, len), len);
 }
-
-function parseDate(str) {
-  if (!str) return null;
-  const s = str.trim().replace(/"/g,"");
-  if (!s) return null;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-  const mdy = s.match(/(\w+)\s+(\d{1,2}),?\s*(\d{4})/);
-  if (mdy) {
-    const d = new Date(parseInt(mdy[3]), new Date(mdy[1]+" 1 2000").getMonth(), parseInt(mdy[2]));
-    if (!isNaN(d) && d.getFullYear()>2000) return d.toISOString().split("T")[0];
-  }
-  return null;
-}
-
 function fetchDates() {
   return new Promise(resolve => {
     const cb = "cb_" + Date.now();
@@ -259,7 +241,6 @@ function fetchDates() {
     document.head.appendChild(s);
   });
 }
-
 function logDate(type, isoDate) {
   return new Promise((resolve, reject) => {
     const cb = "log_" + Date.now();
@@ -281,7 +262,6 @@ function stopParticles() {
   if (particleAnim) cancelAnimationFrame(particleAnim);
   if (particleCtx && particleCanvas) particleCtx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
 }
-
 function startParticles(canvas, phase) {
   stopParticles(); particleCanvas=canvas; particleCtx=canvas.getContext("2d");
   canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
@@ -324,12 +304,10 @@ function showModal(isoDate) {
   overlay.addEventListener("click", e => { if (e.target===overlay) closeModal(); });
   document.body.appendChild(overlay);
 }
-
 function closeModal() {
   const el = document.getElementById("modal-overlay");
   if (el) el.remove();
 }
-
 async function handleLog(type, isoDate) {
   const btns = document.getElementById("modal-btns");
   if (btns) btns.innerHTML = `<div class="modal-saving">Saving...</div>`;
@@ -353,7 +331,7 @@ function buildCalendar(last, len, sexDates, offset) {
   const sexSet = new Set(sexDates);
 
   let cells = ["Su","Mo","Tu","We","Th","Fr","Sa"].map(d => `<div class="cal-dow">${d}</div>`).join("");
-  for (let i=0; i<firstDay; i++) cells += `<div class="cal-day" style="cursor:default"></div>`;
+  for (let i=0; i<firstDay; i++) cells += `<div></div>`;
 
   for (let d=1; d<=daysInMonth; d++) {
     const iso = `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
@@ -392,6 +370,7 @@ function buildCalendar(last, len, sexDates, offset) {
         ${isEstimate?`<div class="cal-estimate">estimated projection</div>`:""}
       </div>
       <button class="cal-nav" onclick="changeMonth(1)" ${offset>=6?"disabled":""}>&#8250;</button>
+    </div>
     <div class="cal-grid">${cells}</div>
     <div class="cal-hint">Tap any date to log a period or intimacy</div>
     <div class="cal-legend">
@@ -447,13 +426,13 @@ function render(dates, sexDates) {
   else if (isLastChanceDay) banner = `<div class="hot-banner fadein" style="margin-bottom:1rem;background:linear-gradient(135deg,#f0b429,#8a6000)"><div class="banner-pulse"></div><div class="banner-icon">⏰</div><div class="banner-title">Last chance tonight</div><div class="banner-sub">Her period starts tomorrow. Tonight is the last opportunity for a while.</div></div>`;
 
   let alerts = "";
-  if (!onPeriod) {
+  if (!onPeriod && !isOverdue) {
     if (soonHot && !isLastChanceDay) alerts += `<div class="alert alert-desire fadein"><div class="alert-dot" style="background:#D85A30"></div><p><strong>Heads up</strong> — a high-desire window is ${next.daysFrom===1?"tomorrow":"in "+next.daysFrom+" days"} (${next.dateStr}).</p></div>`;
     if (periodSoon && !isLastChanceDay) alerts += `<div class="alert alert-period fadein"><div class="alert-dot" style="background:#5576D1"></div><p><strong>Period approaching</strong> — expected ${period.daysUntil===1?"tomorrow":"in "+period.daysUntil+" days"} (${period.dateStr}). Desire will be low.</p></div>`;
     if (!soonHot && !periodSoon && phase.level<=1) alerts += `<div class="alert alert-period fadein"><div class="alert-dot" style="background:#888780"></div><p>Next period expected in <strong>${period.daysUntil} days</strong> (${period.dateStr}).</p></div>`;
   }
 
-  const chipsHtml = !onPeriod ? `<div class="best-card fadein">
+  const chipsHtml = !onPeriod && !isOverdue ? `<div class="best-card fadein">
     <div class="best-title">✦ Best days to initiate ✦</div>
     <div class="day-chips">${best.map(({daysFrom, label, dt}) => {
       const isPeak = label==="Peak", ac = isPeak?"#D85A30":"#1D9E75";
