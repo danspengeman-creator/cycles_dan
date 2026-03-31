@@ -241,6 +241,7 @@ function pinPress(digit) {
     if (pinEntry === CORRECT_PIN) {
       sessionStorage.setItem("unlocked", "1");
       document.getElementById("pin-overlay").style.display = "none";
+      registerSW();
       init();
     } else {
       const dots = document.getElementById("pin-dots");
@@ -297,7 +298,56 @@ function classifyDay(d,len){if(d<=5)return"period";const p=d/len;if(p<=0.46)retu
 function getCycleDay(calDay,month,year,last,len){const diff=Math.floor((new Date(year,month,calDay)-parseISOLocal(last))/86400000);return((diff%len)+len)%len+1;}
 function getDayType(calDay,month,year,last,len){return classifyDay(getCycleDay(calDay,month,year,last,len),len);}
 
-// ── Fetch ──────────────────────────────────────────────────
+// ── Notifications ──────────────────────────────────────────
+async function registerSW() {
+  if (!("serviceWorker" in navigator) || !("Notification" in window)) return;
+  try {
+    await navigator.serviceWorker.register("/sw.js");
+  } catch(e) { console.log("SW registration failed:", e); }
+}
+
+async function requestNotificationPermission() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "default") {
+    await Notification.requestPermission();
+  }
+}
+
+function get6amToday() {
+  const d = new Date();
+  d.setHours(6, 0, 0, 0);
+  if (d.getTime() <= Date.now()) d.setDate(d.getDate() + 1); // already past 6am, schedule tomorrow
+  return d.getTime();
+}
+
+async function scheduleNotification(title, message) {
+  if (!("serviceWorker" in navigator) || Notification.permission !== "granted") return;
+  const reg = await navigator.serviceWorker.ready;
+  reg.active.postMessage({
+    type: "SCHEDULE",
+    payload: { title, message, fireAt: get6amToday() }
+  });
+}
+
+async function maybeNotify(phase, period, isOverdue, isLastChance, rawDays) {
+  await requestNotificationPermission();
+  if (Notification.permission !== "granted") return;
+  let title = "", message = "";
+  if (isOverdue) {
+    title = "Period log overdue 📋";
+    message = `It's been ${rawDays} days. Did her period start? Open the app to log it.`;
+  } else if (isLastChance) {
+    title = "Last chance tonight ⏰";
+    message = "Her period starts tomorrow. Tonight is the last opportunity for a while.";
+  } else if (phase.level >= 4) {
+    title = "Tonight's the night 🔥";
+    message = "She's at peak desire today. The ovulation window is open.";
+  } else if (phase.level === 3 && period.daysUntil <= 3) {
+    title = "Period approaching 🌙";
+    message = `Her period is expected in ${period.daysUntil} days. Desire will be dropping soon.`;
+  }
+  if (message) scheduleNotification(title, message);
+}
 function fetchDates(){return new Promise(resolve=>{const cb="cb_"+Date.now();const s=document.createElement("script");const t=setTimeout(()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB});},8000);function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}window[cb]=data=>{resolve({dates:Array.isArray(data.dates)&&data.dates.length?data.dates:PERIOD_DATES_FB,sexDates:Array.isArray(data.sexDates)?data.sexDates:SEX_DATES_FB});cleanup();};s.onerror=()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB});};s.src=SCRIPT_URL+"?callback="+cb+"&t="+Date.now();document.head.appendChild(s);});}
 function logDate(type,isoDate){return new Promise((resolve,reject)=>{const cb="log_"+Date.now();const s=document.createElement("script");const t=setTimeout(()=>{cleanup();reject(new Error("Timed out"));},8000);function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}window[cb]=data=>{cleanup();if(data.success)resolve(data);else reject(new Error(data.message));};s.onerror=()=>{cleanup();reject(new Error("Script error"));};s.src=SCRIPT_URL+"?action=log&type="+type+"&date="+isoDate+"&callback="+cb;document.head.appendChild(s);});}
 
@@ -364,6 +414,7 @@ function render(dates,sexDates){
   </div>`;
 
   setTimeout(()=>{const f=document.getElementById("gaugeFill");if(f)f.style.width=Math.max(8,((phase.level-1)/4)*100)+"%";if(phase.level>=3){const c=document.getElementById("pCanvas");if(c)startParticles(c,phase);}},100);
+  maybeNotify(phase, period, isOverdue, isLC, rawDays);
 }
 
 // ── Init ───────────────────────────────────────────────────
@@ -374,7 +425,7 @@ async function init(){
   render(dates,sexDates);
 }
 
-if(sessionStorage.getItem("unlocked")==="1"){init();}
+if(sessionStorage.getItem("unlocked")==="1"){registerSW();init();}
 </script>
 </body>
 </html>
