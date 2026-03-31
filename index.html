@@ -200,7 +200,12 @@ function pinDel() {
 function updatePinDots() {
   for (let i=0; i<4; i++) document.getElementById("d"+i).classList.toggle("filled", i < pinEntry.length);
 }
-if (sessionStorage.getItem("unlocked")==="1") {
+document.addEventListener("keydown", e => {
+  if (document.getElementById("pin-overlay").style.display === "none") return;
+  if (e.key >= "0" && e.key <= "9") pinPress(e.key);
+  else if (e.key === "Backspace") pinDel();
+});
+if (sessionStorage.getItem("unlocked") === "1") {
   document.getElementById("pin-overlay").style.display = "none";
   init();
 }
