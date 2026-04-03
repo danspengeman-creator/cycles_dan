@@ -75,33 +75,34 @@
   .chip-month{font-size:11px;color:var(--text2);margin-bottom:6px;}
   .chip-label{font-size:12px;font-weight:500;padding:3px 8px;border-radius:20px;display:inline-block;}
   .chip-peak-dot{font-size:10px;margin-top:4px;animation:pulse 1.8s ease-in-out infinite;}
-  .cal-wrap{background:var(--card-bg);border-radius:16px;border:1px solid var(--border);padding:1.25rem;margin-bottom:1rem;}
-  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .cal-nav{background:none;border:0.5px solid var(--border2);border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .cal-wrap{background:var(--card-bg);border-radius:18px;border:1px solid var(--border);padding:1rem;margin-bottom:1rem;}
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .cal-nav{background:none;border:0.5px solid var(--border2);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .cal-nav:disabled{opacity:0.3;cursor:default;}
   .cal-title-wrap{text-align:center;flex:1;}
-  .cal-title{font-size:14px;font-weight:500;color:var(--text);}
-  .cal-estimate{font-size:10px;color:var(--text3);margin-top:2px;}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
-  .cal-dow{font-size:11px;color:var(--text3);text-align:center;padding-bottom:6px;text-transform:uppercase;font-weight:500;}
-  .cal-day{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text);position:relative;cursor:pointer;transition:filter 0.15s;}
-  .cal-day:active{filter:brightness(0.85);}
-  @media(hover:hover){.cal-day:hover{filter:brightness(0.9);}}
-  .cal-day.today{font-weight:700;outline:2px solid var(--text);outline-offset:-2px;}
-  .cal-day.peak{background:#D85A30;color:#fff;font-weight:600;}
-  .cal-day.rising{background:#1D9E7522;color:#0f6e56;font-weight:500;border:1px solid #1D9E7544;}
-  html.dark .cal-day.rising{color:#5DCAA5;}
-  .cal-day.period{background:#5576D122;color:#3a54a0;border:1px solid #5576D144;}
-  html.dark .cal-day.period{color:#85B7EB;}
-  .cal-day.low{background:var(--low-bg);color:var(--low-text);}
+  .cal-title{font-size:1rem;font-weight:500;color:var(--text);}
+  .cal-estimate{font-size:11px;color:var(--text3);margin-top:2px;font-style:italic;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+  .cal-dow{font-size:10px;font-weight:600;color:var(--text3);text-align:center;text-transform:uppercase;letter-spacing:0.04em;padding:4px 0;}
+  .cal-day{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text);position:relative;cursor:pointer;transition:opacity 0.1s;}
+  .cal-day:active{opacity:0.6;}
+  @media(hover:hover){.cal-day:hover{opacity:0.8;}}
+  .cal-day.today{border:2px solid #E8678A;font-weight:600;}
+  .cal-day.period{background:#E8D4EE;color:#7B4F8E;}
+  .cal-day.follicular{background:#EEF3F8;color:#7A99B8;}
+  .cal-day.fertile{background:#FDEAE0;color:#D4845A;}
+  .cal-day.ovulation{background:#F7C5D2;color:#E8678A;font-weight:600;}
+  .cal-day.luteal{background:#C8E6D4;color:#5FA67A;}
+  .cal-day.pms{background:#C8DDF0;color:#5B8DB8;}
   .cal-day.sex{background:#fff0f8;border:1px solid #e8a0cc;}
   html.dark .cal-day.sex{background:#3a1a2a;border-color:#cc6699;}
   .cal-day.last-chance{background:#fff8e6;color:#8a6000;border:2px solid #f0b429;font-weight:600;}
   html.dark .cal-day.last-chance{background:#2a1f00;color:#f0b429;}
-  .cal-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:10px;margin-bottom:10px;}
-  .cal-legend{display:flex;flex-wrap:wrap;gap:8px;padding-top:10px;border-top:0.5px solid var(--border);}
+  .cal-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:10px;margin-bottom:8px;}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:0.85rem;justify-content:center;}
   .cal-legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);}
   .cal-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .leg-chip{font-size:12px;font-weight:500;padding:5px 11px;border-radius:100px;cursor:default;user-select:none;}
   .feelings-card{background:var(--card-bg);border-radius:16px;border:1px solid var(--border);padding:1.25rem;margin-top:1rem;}
   .feelings-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;text-align:center;}
   .feeling-day{margin-bottom:10px;}
@@ -358,19 +359,60 @@ function buildCalendar(last,len,sexDates,offset){
   const mName=tgt.toLocaleDateString("en-US",{month:"long",year:"numeric"});
   const firstDay=new Date(year,month,1).getDay(),dim=new Date(year,month+1,0).getDate();
   const sexSet=new Set(sexDates);
+  const lastPeriod=parseISOLocal(last);
+  const ovDay=Math.round(len*PHASES[2].maxPct);
+
+  function getDayClass(d,month,year){
+    const dt=new Date(year,month,d);
+    const daysSince=Math.floor((dt-lastPeriod)/86400000);
+    const cycD=((daysSince%len)+len)%len+1;
+    const isLC=cycD===len;
+    if(isLC)return"last-chance";
+    if(cycD<=5)return"period";
+    if(cycD>=ovDay-2&&cycD<=ovDay)return"ovulation";
+    if(cycD>=ovDay-5&&cycD<ovDay-2)return"fertile";
+    const pct=cycD/len;
+    if(pct<=PHASES[1].maxPct)return"follicular";
+    if(pct<=PHASES[3].maxPct)return"luteal";
+    return"pms";
+  }
+
   let cells=["Su","Mo","Tu","We","Th","Fr","Sa"].map(d=>`<div class="cal-dow">${d}</div>`).join("");
   for(let i=0;i<firstDay;i++)cells+=`<div></div>`;
   for(let d=1;d<=dim;d++){
     const iso=`${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    const isSex=sexSet.has(iso),cycD=getCycleDay(d,month,year,last,len),type=getDayType(d,month,year,last,len);
-    const isLC=!isSex&&cycD===len,isToday=offset===0&&d===now.getDate();
-    let cls="cal-day";
-    if(isSex)cls+=" sex";else if(isLC)cls+=" last-chance";else if(type==="period")cls+=" period";else if(type==="rising")cls+=" rising";else if(type==="peak")cls+=" peak";else if(type==="low")cls+=" low";
-    if(isToday)cls+=" today";
-    let tip=isSex?"Intimacy recorded":isLC?"Last chance — period starts tomorrow":type==="period"?"Period day "+cycD+" of 5":type==="rising"?"Rising desire — good time to initiate":type==="peak"?"Peak desire — ovulation window":type==="low"?"Low desire — late luteal phase":"Moderate — post-ovulation";
-    cells+=`<div class="${cls}" onclick="showModal('${iso}')" title="${tip}">${d}${isSex?`<span style="font-size:9px;position:absolute;top:1px;right:1px">😊</span>`:""}</div>`;
+    const isSex=sexSet.has(iso);
+    const pc=getDayClass(d,month,year);
+    const isToday=offset===0&&d===now.getDate();
+    const dt=new Date(year,month,d);
+    const daysSince=Math.floor((dt-lastPeriod)/86400000);
+    const cycD=((daysSince%len)+len)%len+1;
+    let cls="cal-day"+(isSex?" sex":pc?" "+pc:"")+(isToday?" today":"");
+    let tip=isSex?"Intimacy recorded":pc==="last-chance"?"Last chance — period starts tomorrow":pc==="period"?"Period day "+cycD+" of 5":pc==="ovulation"?"Peak desire — ovulation window":pc==="fertile"?"Fertile window — desire rising":pc==="follicular"?"Follicular phase — energy returning":pc==="luteal"?"Luteal phase — winding down":"Late luteal / PMS phase";
+    cells+=`<div class="${cls}" onclick="showModal('${iso}')" title="${tip}">${d}${isSex?`<span style="font-size:8px;position:absolute;bottom:1px;right:2px">😊</span>`:""}</div>`;
   }
-  return`<div class="cal-wrap"><div class="cal-header"><button class="cal-nav" onclick="changeMonth(-1)" ${offset===0?"disabled":""}>&#8249;</button><div class="cal-title-wrap"><div class="cal-title">${mName}</div>${isEst?`<div class="cal-estimate">estimated projection</div>`:""}</div><button class="cal-nav" onclick="changeMonth(1)" ${offset>=6?"disabled":""}>&#8250;</button></div><div class="cal-grid">${cells}</div><div class="cal-hint">Tap any date to log a period or intimacy</div><div class="cal-legend"><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#D85A30"></div>Peak</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#1D9E7522;border:1px solid #1D9E7544"></div>Rising</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#5576D122;border:1px solid #5576D144"></div>Period</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#fff8e6;border:2px solid #f0b429"></div>Last chance</div><div class="cal-legend-item"><span style="font-size:12px">😊</span><span style="margin-left:3px">Intimacy</span></div></div></div>`;
+  return`<div class="cal-wrap">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)" ${offset===0?"disabled":""}>&#8249;</button>
+      <div class="cal-title-wrap">
+        <div class="cal-title">${mName}</div>
+        ${isEst?`<div class="cal-estimate">estimated projection</div>`:""}
+      </div>
+      <button class="cal-nav" onclick="changeMonth(1)" ${offset>=6?"disabled":""}>&#8250;</button>
+    </div>
+    <div class="cal-grid">${cells}</div>
+    <div class="cal-hint">Tap any date to log a period or intimacy</div>
+    <div class="cal-legend">
+      <span class="leg-chip" style="background:#E8D4EE;color:#7B4F8E">🌙 Period</span>
+      <span class="leg-chip" style="background:#EEF3F8;color:#7A99B8">🌸 Follicular</span>
+      <span class="leg-chip" style="background:#FDEAE0;color:#D4845A">🌿 Fertile</span>
+      <span class="leg-chip" style="background:#F7C5D2;color:#E8678A">✨ Ovulation</span>
+      <span class="leg-chip" style="background:#C8E6D4;color:#5FA67A">🍂 Luteal</span>
+      <span class="leg-chip" style="background:#C8DDF0;color:#5B8DB8">🌧 PMS</span>
+      <span class="leg-chip" style="background:#fff8e6;color:#8a6000;border:1px solid #f0b429">⏰ Last chance</span>
+      <span class="leg-chip" style="background:#fff0f8;color:#cc6699;border:1px solid #e8a0cc">😊 Intimacy</span>
+    </div>
+  </div>`;
 }
 function changeMonth(dir){monthOffset=Math.max(0,Math.min(6,monthOffset+dir));if(calState)document.getElementById("calContainer").innerHTML=buildCalendar(calState.last,calState.len,calState.sexDates,monthOffset);}
 
