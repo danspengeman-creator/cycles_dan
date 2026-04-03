@@ -11,163 +11,149 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <style>
   :root {
-    --bg: #f5f5f3;
-    --bg2: #fff;
-    --bg3: #f0f0ee;
-    --text: #1a1a1a;
-    --text2: #888;
-    --text3: #aaa;
-    --border: #e5e5e5;
-    --border2: #ddd;
-    --card-bg: #fff;
-    --pin-bg: #f5f5f3;
-    --pin-btn: #fff;
-    --low-bg: #f5f5f3;
-    --low-text: #bbb;
+    --bg:#f5f5f3;--bg2:#fff;--bg3:#f0f0ee;--text:#1a1a1a;--text2:#888;--text3:#aaa;
+    --border:#e5e5e5;--border2:#ddd;--card-bg:#fff;--pin-bg:#f5f5f3;--pin-btn:#fff;
+    --low-bg:#f5f5f3;--low-text:#bbb;
   }
   html.dark {
-    --bg: #111112;
-    --bg2: #1c1c1e;
-    --bg3: #2c2c2e;
-    --text: #f2f2f7;
-    --text2: #8e8e93;
-    --text3: #636366;
-    --border: #2c2c2e;
-    --border2: #3a3a3c;
-    --card-bg: #1c1c1e;
-    --pin-bg: #111112;
-    --pin-btn: #2c2c2e;
-    --low-bg: #2c2c2e;
-    --low-text: #636366;
+    --bg:#111112;--bg2:#1c1c1e;--bg3:#2c2c2e;--text:#f2f2f7;--text2:#8e8e93;--text3:#636366;
+    --border:#2c2c2e;--border2:#3a3a3c;--card-bg:#1c1c1e;--pin-bg:#111112;--pin-btn:#2c2c2e;
+    --low-bg:#2c2c2e;--low-text:#636366;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); min-height: 100vh; color: var(--text); transition: background 0.3s, color 0.3s; }
-  #app { width: 100%; max-width: 420px; margin: 0 auto; padding: 1.5rem 1rem 2rem; padding-top: max(1.5rem, env(safe-area-inset-top)); }
-  @media (min-width: 768px) {
-    body { display: flex; flex-direction: column; align-items: center; padding: 2.5rem 2rem; }
-    #app { max-width: 960px; width: 100%; padding: 0; padding-top: 0; }
-    #app h1 { font-size: 28px; }
-    .desktop-sub { display: block !important; }
-    .desktop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
-    .desktop-left, .desktop-right { display: flex; flex-direction: column; gap: 1rem; }
-    .card, .best-card, .cal-wrap, .alert, .hot-banner, .stats-card { margin-bottom: 0 !important; }
-    .hot-banner .banner-title { font-size: 32px; }
-    .hot-banner .banner-icon { font-size: 56px; }
-    .footer { grid-column: 1 / -1; text-align: center; padding-top: 0.5rem; }
-    .stats-card { grid-column: 1 / -1; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);min-height:100vh;color:var(--text);transition:background 0.3s,color 0.3s;}
+  #app{width:100%;max-width:420px;margin:0 auto;padding:1.5rem 1rem 2rem;padding-top:max(1.5rem,env(safe-area-inset-top));}
+  @media(min-width:768px){
+    body{display:flex;flex-direction:column;align-items:center;padding:2.5rem 2rem;}
+    #app{max-width:960px;width:100%;padding:0;}
+    #app h1{font-size:28px;}
+    .desktop-sub{display:block!important;}
+    .desktop-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start;}
+    .desktop-left,.desktop-right{display:flex;flex-direction:column;gap:1rem;}
+    .card,.best-card,.cal-wrap,.alert,.hot-banner,.stats-card,.feelings-card{margin-bottom:0!important;}
+    .hot-banner .banner-title{font-size:32px;}
+    .hot-banner .banner-icon{font-size:56px;}
+    .footer{grid-column:1/-1;text-align:center;padding-top:0.5rem;}
+    .stats-card,.feelings-card{grid-column:1/-1;}
   }
-  .desktop-sub { display: none; text-align: center; font-size: 13px; color: var(--text2); margin-bottom: 2rem; }
-  .header-row { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 1.5rem; margin-top: 1rem; }
-  h1 { font-size: 22px; font-weight: 500; color: var(--text); text-align: center; }
-  .theme-toggle { position: absolute; right: 0; width: 36px; height: 36px; border-radius: 50%; border: 0.5px solid var(--border2); background: var(--card-bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: background 0.2s; }
-  .theme-toggle:hover { background: var(--bg3); }
-  .card { background: var(--card-bg); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
-  .row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-  .day-label { font-size: 12px; color: var(--text2); margin-bottom: 2px; }
-  .level-label { font-size: 32px; font-weight: 500; color: var(--text); line-height: 1; }
-  .orb-wrap { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .orb { width: 28px; height: 28px; border-radius: 50%; }
-  .gauge-track { height: 10px; border-radius: 6px; background: var(--bg3); overflow: hidden; margin-bottom: 6px; }
-  .gauge-fill { height: 100%; border-radius: 6px; transition: width 1s cubic-bezier(0.34,1.56,0.64,1); }
-  .gauge-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); }
-  .desc { font-size: 13px; color: var(--text2); margin: 1rem 0 6px; }
-  .phase-tip { font-size: 12px; color: var(--text3); line-height: 1.5; font-style: italic; margin-bottom: 1rem; }
-  .phase-strip { display: flex; gap: 4px; margin-top: 0.75rem; }
-  .phase-pip { flex: 1; height: 3px; border-radius: 2px; background: var(--bg3); }
-  .alert { border-radius: 10px; padding: 12px 14px; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; }
-  .alert-desire { background: #fff3f022; border: 1px solid #f0a08066; }
-  .alert-period { background: #f0f4ff22; border: 1px solid #a0b4f066; }
-  html.dark .alert-desire { background: #3a1f1022; }
-  html.dark .alert-period { background: #1a2a4022; }
-  .alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; animation: pulse 1.2s ease-in-out infinite; }
-  .alert p { font-size: 13px; color: var(--text); line-height: 1.5; }
-  .hot-banner { border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; text-align: center; position: relative; overflow: hidden; }
-  .hot-banner .banner-icon { font-size: 48px; margin-bottom: 8px; animation: bounceIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
-  .hot-banner .banner-title { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-  .hot-banner .banner-sub { font-size: 14px; color: rgba(255,255,255,0.85); }
-  .hot-banner .banner-pulse { position: absolute; inset: 0; border-radius: 16px; animation: ringPulse 2s ease-out infinite; pointer-events: none; }
-  .best-card { background: var(--card-bg); border-radius: 16px; border: 2px solid #D85A3066; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 2px 12px #D85A3018; }
-  .best-title { font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 12px; text-align: center; text-transform: uppercase; letter-spacing: 1.2px; }
-  .day-chips { display: flex; gap: 8px; }
-  .chip { flex: 1; border-radius: 12px; padding: 14px 8px; text-align: center; }
-  .chip-dow { font-size: 11px; color: var(--text3); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .chip-date { font-size: 22px; font-weight: 600; margin-bottom: 2px; }
-  .chip-month { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
-  .chip-label { font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 20px; display: inline-block; }
-  .chip-peak-dot { font-size: 10px; margin-top: 4px; animation: pulse 1.8s ease-in-out infinite; }
-  .cal-wrap { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1rem; }
-  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .cal-nav { background: none; border: 0.5px solid var(--border2); border-radius: 8px; width: 36px; height: 36px; cursor: pointer; font-size: 18px; color: var(--text2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .cal-nav:disabled { opacity: 0.3; cursor: default; }
-  .cal-title-wrap { text-align: center; flex: 1; }
-  .cal-title { font-size: 14px; font-weight: 500; color: var(--text); }
-  .cal-estimate { font-size: 10px; color: var(--text3); margin-top: 2px; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-  .cal-dow { font-size: 11px; color: var(--text3); text-align: center; padding-bottom: 6px; text-transform: uppercase; font-weight: 500; }
-  .cal-day { aspect-ratio: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; color: var(--text); position: relative; cursor: pointer; transition: filter 0.15s; }
-  .cal-day:active { filter: brightness(0.85); }
-  @media (hover: hover) { .cal-day:hover { filter: brightness(0.9); } }
-  .cal-day.today { font-weight: 700; outline: 2px solid var(--text); outline-offset: -2px; }
-  .cal-day.peak { background: #D85A30; color: #fff; font-weight: 600; }
-  .cal-day.rising { background: #1D9E7522; color: #0f6e56; font-weight: 500; border: 1px solid #1D9E7544; }
-  html.dark .cal-day.rising { color: #5DCAA5; }
-  .cal-day.period { background: #5576D122; color: #3a54a0; border: 1px solid #5576D144; }
-  html.dark .cal-day.period { color: #85B7EB; }
-  .cal-day.low { background: var(--low-bg); color: var(--low-text); }
-  .cal-day.sex { background: #fff0f8; border: 1px solid #e8a0cc; }
-  html.dark .cal-day.sex { background: #3a1a2a; border-color: #cc6699; }
-  .cal-day.last-chance { background: #fff8e6; color: #8a6000; border: 2px solid #f0b429; font-weight: 600; }
-  html.dark .cal-day.last-chance { background: #2a1f00; color: #f0b429; }
-  .cal-hint { font-size: 10px; color: var(--text3); text-align: center; margin-top: 10px; margin-bottom: 10px; }
-  .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; border-top: 0.5px solid var(--border); }
-  .cal-legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text2); }
-  .cal-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-  .stats-card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); padding: 1.25rem; margin-top: 1rem; }
-  .stats-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 12px; text-align: center; }
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-  .stat { text-align: center; }
-  .stat-val { font-size: 20px; font-weight: 500; color: var(--text); line-height: 1.1; }
-  .stat-lbl { font-size: 10px; color: var(--text3); margin-top: 3px; line-height: 1.3; }
-  .footer { font-size: 11px; color: var(--text3); text-align: center; margin-top: 1rem; }
-  .footer a { color: var(--text3); cursor: pointer; text-decoration: underline; }
-  .loading { text-align: center; padding: 3rem 0; color: var(--text2); font-size: 14px; }
-  .dots { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); animation: pulse 1.2s ease-in-out infinite; }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-  canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 100; animation: fadeUp 0.2s ease; }
-  .modal { background: var(--card-bg); border-radius: 20px; padding: 1.5rem; width: 280px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-  .modal-date { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-  .modal-sub { font-size: 13px; color: var(--text2); margin-bottom: 1.25rem; }
-  .modal-btns { display: flex; flex-direction: column; gap: 8px; }
-  .modal-btn { padding: 13px; border-radius: 12px; border: none; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; }
-  .modal-btn.period { background: #5576D122; color: #5576D1; border: 1px solid #5576D166; }
-  .modal-btn.sex { background: #fff0f8; color: #cc6699; border: 1px solid #e8a0cc; }
-  html.dark .modal-btn.sex { background: #3a1a2a; }
-  .modal-btn.cancel { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); font-weight: 400; }
-  .modal-saving { font-size: 13px; color: var(--text2); padding: 0.75rem 0; }
-  .modal-success { font-size: 13px; color: #1D9E75; padding: 0.5rem 0; font-weight: 500; }
-  .modal-error { font-size: 13px; color: #D85A30; padding: 0.5rem 0; }
-  .pin-overlay { position: fixed; inset: 0; background: var(--pin-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; transition: background 0.3s; }
-  .pin-title { font-size: 22px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
-  .pin-sub { font-size: 13px; color: var(--text2); margin-bottom: 2rem; }
-  .pin-dots { display: flex; gap: 16px; margin-bottom: 2rem; }
-  .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--border2); transition: background 0.15s; }
-  .pin-dot.filled { background: var(--text); }
-  .pin-grid { display: grid; grid-template-columns: repeat(3, 72px); gap: 12px; }
-  .pin-btn { width: 72px; height: 72px; border-radius: 50%; border: 0.5px solid var(--border2); background: var(--pin-btn); font-size: 22px; font-weight: 400; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.1s; }
-  .pin-btn:active { background: var(--bg3); }
-  .pin-btn.del { font-size: 16px; color: var(--text2); }
-  .pin-btn.empty { visibility: hidden; pointer-events: none; }
-  .pin-error { font-size: 13px; color: #D85A30; margin-top: 1rem; height: 20px; text-align: center; }
-  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
-  @keyframes bounceIn { from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1} }
-  @keyframes ringPulse { 0%{box-shadow:0 0 0 0 rgba(255,255,255,0.4)}70%{box-shadow:0 0 0 14px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)} }
-  @keyframes pulseOrb { 0%,100%{transform:scale(1)}50%{transform:scale(1.12)} }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
-  .fadein { animation: fadeUp 0.5s ease both; }
+  .desktop-sub{display:none;text-align:center;font-size:13px;color:var(--text2);margin-bottom:2rem;}
+  .header-row{display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:1.5rem;margin-top:1rem;}
+  h1{font-size:22px;font-weight:500;color:var(--text);text-align:center;}
+  .theme-toggle{position:absolute;right:0;width:36px;height:36px;border-radius:50%;border:0.5px solid var(--border2);background:var(--card-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background 0.2s;}
+  .theme-toggle:hover{background:var(--bg3);}
+  .card{background:var(--card-bg);border-radius:16px;padding:1.25rem;margin-bottom:1rem;position:relative;overflow:hidden;}
+  .row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;}
+  .day-label{font-size:12px;color:var(--text2);margin-bottom:2px;}
+  .level-label{font-size:32px;font-weight:500;color:var(--text);line-height:1;}
+  .orb-wrap{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .orb{width:28px;height:28px;border-radius:50%;}
+  .gauge-track{height:10px;border-radius:6px;background:var(--bg3);overflow:hidden;margin-bottom:6px;}
+  .gauge-fill{height:100%;border-radius:6px;transition:width 1s cubic-bezier(0.34,1.56,0.64,1);}
+  .gauge-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);}
+  .desc{font-size:13px;color:var(--text2);margin:1rem 0 6px;}
+  .phase-tip{font-size:12px;color:var(--text3);line-height:1.5;font-style:italic;margin-bottom:1rem;}
+  .phase-strip{display:flex;gap:4px;margin-top:0.75rem;}
+  .phase-pip{flex:1;height:3px;border-radius:2px;background:var(--bg3);}
+  .alert{border-radius:10px;padding:12px 14px;margin-bottom:1rem;display:flex;align-items:center;gap:10px;}
+  .alert-desire{background:#fff3f022;border:1px solid #f0a08066;}
+  .alert-period{background:#f0f4ff22;border:1px solid #a0b4f066;}
+  html.dark .alert-desire{background:#3a1f1022;}
+  html.dark .alert-period{background:#1a2a4022;}
+  .alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:pulse 1.2s ease-in-out infinite;}
+  .alert p{font-size:13px;color:var(--text);line-height:1.5;}
+  .hot-banner{border-radius:16px;padding:1.5rem;margin-bottom:1rem;text-align:center;position:relative;overflow:hidden;}
+  .hot-banner .banner-icon{font-size:48px;margin-bottom:8px;animation:bounceIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;}
+  .hot-banner .banner-title{font-size:26px;font-weight:700;color:#fff;margin-bottom:4px;}
+  .hot-banner .banner-sub{font-size:14px;color:rgba(255,255,255,0.85);}
+  .hot-banner .banner-pulse{position:absolute;inset:0;border-radius:16px;animation:ringPulse 2s ease-out infinite;pointer-events:none;}
+  .best-card{background:var(--card-bg);border-radius:16px;border:2px solid #D85A3066;padding:1.25rem;margin-bottom:1rem;box-shadow:0 2px 12px #D85A3018;}
+  .best-title{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:12px;text-align:center;text-transform:uppercase;letter-spacing:1.2px;}
+  .day-chips{display:flex;gap:8px;}
+  .chip{flex:1;border-radius:12px;padding:14px 8px;text-align:center;}
+  .chip-dow{font-size:11px;color:var(--text3);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px;}
+  .chip-date{font-size:22px;font-weight:600;margin-bottom:2px;}
+  .chip-month{font-size:11px;color:var(--text2);margin-bottom:6px;}
+  .chip-label{font-size:12px;font-weight:500;padding:3px 8px;border-radius:20px;display:inline-block;}
+  .chip-peak-dot{font-size:10px;margin-top:4px;animation:pulse 1.8s ease-in-out infinite;}
+  .cal-wrap{background:var(--card-bg);border-radius:16px;border:1px solid var(--border);padding:1.25rem;margin-bottom:1rem;}
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .cal-nav{background:none;border:0.5px solid var(--border2);border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .cal-nav:disabled{opacity:0.3;cursor:default;}
+  .cal-title-wrap{text-align:center;flex:1;}
+  .cal-title{font-size:14px;font-weight:500;color:var(--text);}
+  .cal-estimate{font-size:10px;color:var(--text3);margin-top:2px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  .cal-dow{font-size:11px;color:var(--text3);text-align:center;padding-bottom:6px;text-transform:uppercase;font-weight:500;}
+  .cal-day{aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text);position:relative;cursor:pointer;transition:filter 0.15s;}
+  .cal-day:active{filter:brightness(0.85);}
+  @media(hover:hover){.cal-day:hover{filter:brightness(0.9);}}
+  .cal-day.today{font-weight:700;outline:2px solid var(--text);outline-offset:-2px;}
+  .cal-day.peak{background:#D85A30;color:#fff;font-weight:600;}
+  .cal-day.rising{background:#1D9E7522;color:#0f6e56;font-weight:500;border:1px solid #1D9E7544;}
+  html.dark .cal-day.rising{color:#5DCAA5;}
+  .cal-day.period{background:#5576D122;color:#3a54a0;border:1px solid #5576D144;}
+  html.dark .cal-day.period{color:#85B7EB;}
+  .cal-day.low{background:var(--low-bg);color:var(--low-text);}
+  .cal-day.sex{background:#fff0f8;border:1px solid #e8a0cc;}
+  html.dark .cal-day.sex{background:#3a1a2a;border-color:#cc6699;}
+  .cal-day.last-chance{background:#fff8e6;color:#8a6000;border:2px solid #f0b429;font-weight:600;}
+  html.dark .cal-day.last-chance{background:#2a1f00;color:#f0b429;}
+  .cal-hint{font-size:10px;color:var(--text3);text-align:center;margin-top:10px;margin-bottom:10px;}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:8px;padding-top:10px;border-top:0.5px solid var(--border);}
+  .cal-legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);}
+  .cal-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+  .feelings-card{background:var(--card-bg);border-radius:16px;border:1px solid var(--border);padding:1.25rem;margin-top:1rem;}
+  .feelings-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;text-align:center;}
+  .feeling-day{margin-bottom:10px;}
+  .feeling-day-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text3);margin-bottom:6px;}
+  .feeling-pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .feeling-pill{display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:0.5px solid var(--border);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--text2);}
+  .stats-card{background:var(--card-bg);border-radius:16px;border:1px solid var(--border);padding:1.25rem;margin-top:1rem;}
+  .stats-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;text-align:center;}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  .stat{text-align:center;}
+  .stat-val{font-size:20px;font-weight:500;color:var(--text);line-height:1.1;}
+  .stat-lbl{font-size:10px;color:var(--text3);margin-top:3px;line-height:1.3;}
+  .footer{font-size:11px;color:var(--text3);text-align:center;margin-top:1rem;}
+  .footer a{color:var(--text3);cursor:pointer;text-decoration:underline;}
+  .loading{text-align:center;padding:3rem 0;color:var(--text2);font-size:14px;}
+  .dots{display:flex;justify-content:center;gap:6px;margin-top:8px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--border2);animation:pulse 1.2s ease-in-out infinite;}
+  .dot:nth-child(2){animation-delay:0.2s;}
+  .dot:nth-child(3){animation-delay:0.4s;}
+  canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:100;animation:fadeUp 0.2s ease;}
+  .modal{background:var(--card-bg);border-radius:20px;padding:1.5rem;width:280px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);}
+  .modal-date{font-size:20px;font-weight:500;color:var(--text);margin-bottom:4px;}
+  .modal-sub{font-size:13px;color:var(--text2);margin-bottom:1.25rem;}
+  .modal-btns{display:flex;flex-direction:column;gap:8px;}
+  .modal-btn{padding:13px;border-radius:12px;border:none;font-size:15px;font-weight:500;cursor:pointer;width:100%;}
+  .modal-btn.period{background:#5576D122;color:#5576D1;border:1px solid #5576D166;}
+  .modal-btn.sex{background:#fff0f8;color:#cc6699;border:1px solid #e8a0cc;}
+  html.dark .modal-btn.sex{background:#3a1a2a;}
+  .modal-btn.cancel{background:var(--bg3);color:var(--text2);border:1px solid var(--border);font-weight:400;}
+  .modal-saving{font-size:13px;color:var(--text2);padding:0.75rem 0;}
+  .modal-success{font-size:13px;color:#1D9E75;padding:0.5rem 0;font-weight:500;}
+  .modal-error{font-size:13px;color:#D85A30;padding:0.5rem 0;}
+  .pin-overlay{position:fixed;inset:0;background:var(--pin-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:background 0.3s;}
+  .pin-title{font-size:22px;font-weight:500;color:var(--text);margin-bottom:8px;}
+  .pin-sub{font-size:13px;color:var(--text2);margin-bottom:2rem;}
+  .pin-dots{display:flex;gap:16px;margin-bottom:2rem;}
+  .pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border2);transition:background 0.15s;}
+  .pin-dot.filled{background:var(--text);}
+  .pin-grid{display:grid;grid-template-columns:repeat(3,72px);gap:12px;}
+  .pin-btn{width:72px;height:72px;border-radius:50%;border:0.5px solid var(--border2);background:var(--pin-btn);font-size:22px;font-weight:400;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s;}
+  .pin-btn:active{background:var(--bg3);}
+  .pin-btn.del{font-size:16px;color:var(--text2);}
+  .pin-btn.empty{visibility:hidden;pointer-events:none;}
+  .pin-error{font-size:13px;color:#D85A30;margin-top:1rem;height:20px;text-align:center;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes bounceIn{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}
+  @keyframes ringPulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,0.4)}70%{box-shadow:0 0 0 14px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+  @keyframes pulseOrb{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+  .fadein{animation:fadeUp 0.5s ease both;}
 </style>
 </head>
 <body>
@@ -176,10 +162,8 @@
   <div class="pin-title">Michelle Libido Gauge</div>
   <div class="pin-sub">Enter your PIN to continue</div>
   <div class="pin-dots" id="pin-dots">
-    <div class="pin-dot" id="d0"></div>
-    <div class="pin-dot" id="d1"></div>
-    <div class="pin-dot" id="d2"></div>
-    <div class="pin-dot" id="d3"></div>
+    <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
   </div>
   <div class="pin-grid">
     <button class="pin-btn" onclick="pinPress('1')">1</button>
@@ -218,71 +202,31 @@ const SEX_DATES_FB = ["2026-03-23"];
 const FEELING_EMOJIS = {"Happy":"😊","Energized":"⚡","Calm":"😌","Affectionate":"🥰","Horny":"🔥","Neutral":"😐","Tired":"😴","Foggy / Low focus":"🧠","Stressed":"😮‍💨","Emotional":"😢","Irritable":"😠","Cramping":"🤕","Bloated":"🫠","Headachey":"🤯","Breast Tenderness":"🎀","Nauseous":"🤢"};
 
 // ── Theme ──────────────────────────────────────────────────
-function applyTheme(dark) {
-  document.documentElement.classList.toggle("dark", dark);
-  document.getElementById("themeToggle").textContent = dark ? "☀️" : "🌙";
-}
-function toggleTheme() {
-  const isDark = document.documentElement.classList.contains("dark");
-  localStorage.setItem("theme", isDark ? "light" : "dark");
-  applyTheme(!isDark);
-}
-(function initTheme() {
-  const saved = localStorage.getItem("theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  applyTheme(saved ? saved === "dark" : prefersDark);
-})();
+function applyTheme(dark){document.documentElement.classList.toggle("dark",dark);document.getElementById("themeToggle").textContent=dark?"☀️":"🌙";}
+function toggleTheme(){const d=document.documentElement.classList.contains("dark");localStorage.setItem("theme",d?"light":"dark");applyTheme(!d);}
+(function(){const s=localStorage.getItem("theme");applyTheme(s?s==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches);})();
 
 // ── PIN ────────────────────────────────────────────────────
-let pinEntry = "";
-function pinPress(digit) {
-  if (pinEntry.length >= 4) return;
-  pinEntry += digit;
-  updatePinDots();
-  if (pinEntry.length === 4) {
-    if (pinEntry === CORRECT_PIN) {
-      sessionStorage.setItem("unlocked", "1");
-      document.getElementById("pin-overlay").style.display = "none";
-      registerSW();
-      init();
-    } else {
-      const dots = document.getElementById("pin-dots");
-      dots.style.animation = "shake 0.4s ease";
-      document.getElementById("pin-error").textContent = "Incorrect PIN. Try again.";
-      setTimeout(() => { dots.style.animation = ""; pinEntry = ""; updatePinDots(); }, 400);
-    }
+let pinEntry="";
+function pinPress(digit){
+  if(pinEntry.length>=4)return;
+  pinEntry+=digit;updatePinDots();
+  if(pinEntry.length===4){
+    if(pinEntry===CORRECT_PIN){sessionStorage.setItem("unlocked","1");document.getElementById("pin-overlay").style.display="none";registerSW();init();}
+    else{const dots=document.getElementById("pin-dots");dots.style.animation="shake 0.4s ease";document.getElementById("pin-error").textContent="Incorrect PIN. Try again.";setTimeout(()=>{dots.style.animation="";pinEntry="";updatePinDots();},400);}
   }
 }
-function pinDel() {
-  pinEntry = pinEntry.slice(0, -1);
-  updatePinDots();
-  document.getElementById("pin-error").textContent = "";
-}
-function updatePinDots() {
-  for (let i = 0; i < 4; i++) document.getElementById("d" + i).classList.toggle("filled", i < pinEntry.length);
-}
-document.addEventListener("keydown", e => {
-  const overlay = document.getElementById("pin-overlay");
-  if (!overlay || overlay.style.display === "none") return;
-  if (e.key >= "0" && e.key <= "9") pinPress(e.key);
-  else if (e.key === "Backspace") pinDel();
-});
-if (sessionStorage.getItem("unlocked") === "1") {
-  document.getElementById("pin-overlay").style.display = "none";
-}
+function pinDel(){pinEntry=pinEntry.slice(0,-1);updatePinDots();document.getElementById("pin-error").textContent="";}
+function updatePinDots(){for(let i=0;i<4;i++)document.getElementById("d"+i).classList.toggle("filled",i<pinEntry.length);}
+document.addEventListener("keydown",e=>{const o=document.getElementById("pin-overlay");if(!o||o.style.display==="none")return;if(e.key>="0"&&e.key<="9")pinPress(e.key);else if(e.key==="Backspace")pinDel();});
+if(sessionStorage.getItem("unlocked")==="1"){document.getElementById("pin-overlay").style.display="none";}
 
 // ── Phase tips ─────────────────────────────────────────────
-const PHASE_TIPS = {
-  "Menstrual": ["Focus on comfort and care. Warm gestures, low-key quality time and zero pressure go a long way right now.","This is a rest phase for her. Small acts of kindness like a warm meal, a cozy night in or just being present mean everything.","Keep it simple and low-key. She'll appreciate you taking things off her plate and not pushing for intimacy.","Think nurture over romance. A quiet evening, her favorite comfort food and some extra patience will not go unnoticed."],
-  "Follicular": ["She's energetic and open. Great time for dates, new experiences and playful flirtation as she's more receptive to connection.","Her mood is lifting and she's feeling more herself. Plan something fun, be spontaneous and let the good energy flow.","This is a great window for quality time together. She's curious, social and ready to engage so make the most of it.","She's coming alive again after her period. Light flirting, making plans and showing genuine interest will land well."],
-  "Ovulation": ["Her confidence and desire are at their peak. Be bold, plan something special and don't hesitate to initiate.","This is the sweet spot. She's feeling attractive and connected so match her energy and make your move.","Her libido is at its highest right now. Be attentive, compliment her genuinely and set the right mood.","Don't overthink it. She's naturally drawn toward connection right now so a little effort goes a very long way."],
-  "Luteal": ["She may need more reassurance and emotional support. Acts of service and attentiveness matter more than grand gestures.","Her energy is starting to dip. Check in on her, handle things without being asked and keep the vibe light.","This phase calls for patience and presence. She's more sensitive right now so thoughtful beats flashy.","Focus on being dependable and calm. Small consistent gestures of care will mean more to her than big romantic moves."],
-  "Late Luteal": ["PMS territory so patience is key. Reduce stress for her, avoid conflict and focus on comfort over romance.","She may be irritable or withdrawn and that's completely normal. Give her space, be steady and don't take things personally.","This is not the time to push. Be her soft landing place, keep the household calm and save big conversations for later.","Her body and mood are winding down. Show up with empathy, handle the little things quietly and expect nothing in return."]
-};
-function getDailyTip(n) { const t=PHASE_TIPS[n]||PHASE_TIPS["Luteal"]; return t[Math.floor(Date.now()/86400000)%t.length]; }
+const PHASE_TIPS={"Menstrual":["Focus on comfort and care. Warm gestures, low-key quality time and zero pressure go a long way right now.","This is a rest phase for her. Small acts of kindness like a warm meal, a cozy night in or just being present mean everything.","Keep it simple and low-key. She'll appreciate you taking things off her plate and not pushing for intimacy.","Think nurture over romance. A quiet evening, her favorite comfort food and some extra patience will not go unnoticed."],"Follicular":["She's energetic and open. Great time for dates, new experiences and playful flirtation as she's more receptive to connection.","Her mood is lifting and she's feeling more herself. Plan something fun, be spontaneous and let the good energy flow.","This is a great window for quality time together. She's curious, social and ready to engage so make the most of it.","She's coming alive again after her period. Light flirting, making plans and showing genuine interest will land well."],"Ovulation":["Her confidence and desire are at their peak. Be bold, plan something special and don't hesitate to initiate.","This is the sweet spot. She's feeling attractive and connected so match her energy and make your move.","Her libido is at its highest right now. Be attentive, compliment her genuinely and set the right mood.","Don't overthink it. She's naturally drawn toward connection right now so a little effort goes a very long way."],"Luteal":["She may need more reassurance and emotional support. Acts of service and attentiveness matter more than grand gestures.","Her energy is starting to dip. Check in on her, handle things without being asked and keep the vibe light.","This phase calls for patience and presence. She's more sensitive right now so thoughtful beats flashy.","Focus on being dependable and calm. Small consistent gestures of care will mean more to her than big romantic moves."],"Late Luteal":["PMS territory so patience is key. Reduce stress for her, avoid conflict and focus on comfort over romance.","She may be irritable or withdrawn and that's completely normal. Give her space, be steady and don't take things personally.","This is not the time to push. Be her soft landing place, keep the household calm and save big conversations for later.","Her body and mood are winding down. Show up with empathy, handle the little things quietly and expect nothing in return."]};
+function getDailyTip(n){const t=PHASE_TIPS[n]||PHASE_TIPS["Luteal"];return t[Math.floor(Date.now()/86400000)%t.length];}
 
 // ── Phases ─────────────────────────────────────────────────
-const PHASES = [
+const PHASES=[
   {name:"Menstrual",  maxPct:0.18,level:1,color:"#B5D4F4",accent:"#378ADD",label:"Low",     desc:"Rest phase — energy and desire are minimal."},
   {name:"Follicular", maxPct:0.46,level:3,color:"#9FE1CB",accent:"#1D9E75",label:"Rising",  desc:"Estrogen rising — mood and interest are climbing."},
   {name:"Ovulation",  maxPct:0.57,level:5,color:"#F0997B",accent:"#D85A30",label:"Peak",    desc:"Ovulation window — libido is at its highest."},
@@ -300,58 +244,60 @@ function classifyDay(d,len){if(d<=5)return"period";const p=d/len;if(p<=0.46)retu
 function getCycleDay(calDay,month,year,last,len){const diff=Math.floor((new Date(year,month,calDay)-parseISOLocal(last))/86400000);return((diff%len)+len)%len+1;}
 function getDayType(calDay,month,year,last,len){return classifyDay(getCycleDay(calDay,month,year,last,len),len);}
 
-// ── Notifications ──────────────────────────────────────────
-async function registerSW() {
-  if (!("serviceWorker" in navigator) || !("Notification" in window)) return;
-  try {
-    await navigator.serviceWorker.register("/sw.js");
-  } catch(e) { console.log("SW registration failed:", e); }
+// ── Fetch ──────────────────────────────────────────────────
+function fetchDates(){
+  return new Promise(resolve=>{
+    const cb="cb_"+Date.now();
+    const s=document.createElement("script");
+    const t=setTimeout(()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB,feelingsMap:{},symptomDates:[]});},8000);
+    function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}
+    window[cb]=data=>{
+      resolve({
+        dates:Array.isArray(data.periodDates)&&data.periodDates.length?data.periodDates:PERIOD_DATES_FB,
+        sexDates:Array.isArray(data.sexDates)?data.sexDates:SEX_DATES_FB,
+        feelingsMap:data.feelingsMap||{},
+        symptomDates:Array.isArray(data.symptomDates)?data.symptomDates:[]
+      });
+      cleanup();
+    };
+    s.onerror=()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB,feelingsMap:{},symptomDates:[]});};
+    s.src=SCRIPT_URL+"?action=read&callback="+cb+"&t="+Date.now();
+    document.head.appendChild(s);
+  });
 }
-
-async function requestNotificationPermission() {
-  if (!("Notification" in window)) return;
-  if (Notification.permission === "default") {
-    await Notification.requestPermission();
-  }
-}
-
-function get6amToday() {
-  const d = new Date();
-  d.setHours(6, 0, 0, 0);
-  if (d.getTime() <= Date.now()) d.setDate(d.getDate() + 1); // already past 6am, schedule tomorrow
-  return d.getTime();
-}
-
-async function scheduleNotification(title, message) {
-  if (!("serviceWorker" in navigator) || Notification.permission !== "granted") return;
-  const reg = await navigator.serviceWorker.ready;
-  reg.active.postMessage({
-    type: "SCHEDULE",
-    payload: { title, message, fireAt: get6amToday() }
+function logDate(type,isoDate){
+  return new Promise((resolve,reject)=>{
+    const cb="log_"+Date.now();
+    const s=document.createElement("script");
+    const t=setTimeout(()=>{cleanup();reject(new Error("Timed out"));},8000);
+    function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}
+    window[cb]=data=>{cleanup();if(data.ok||data.success)resolve(data);else reject(new Error(data.message||data.error));};
+    s.onerror=()=>{cleanup();reject(new Error("Script error"));};
+    const action=type==="period"?"period":"sex";
+    s.src=SCRIPT_URL+"?action="+action+"&date="+isoDate+"&callback="+cb;
+    document.head.appendChild(s);
   });
 }
 
-async function maybeNotify(phase, period, isOverdue, isLastChance, rawDays) {
-  await requestNotificationPermission();
-  if (Notification.permission !== "granted") return;
-  let title = "", message = "";
-  if (isOverdue) {
-    title = "Period log overdue 📋";
-    message = `It's been ${rawDays} days. Did her period start? Open the app to log it.`;
-  } else if (isLastChance) {
-    title = "Last chance tonight ⏰";
-    message = "Her period starts tomorrow. Tonight is the last opportunity for a while.";
-  } else if (phase.level >= 4) {
-    title = "Tonight's the night 🔥";
-    message = "She's at peak desire today. The ovulation window is open.";
-  } else if (phase.level === 3 && period.daysUntil <= 3) {
-    title = "Period approaching 🌙";
-    message = `Her period is expected in ${period.daysUntil} days. Desire will be dropping soon.`;
-  }
-  if (message) scheduleNotification(title, message);
+// ── Service Worker ─────────────────────────────────────────
+async function registerSW(){
+  if(!("serviceWorker"in navigator)||!("Notification"in window))return;
+  try{await navigator.serviceWorker.register("/sw.js");}catch(e){console.log("SW failed:",e);}
 }
-function fetchDates(){return new Promise(resolve=>{const cb="cb_"+Date.now();const s=document.createElement("script");const t=setTimeout(()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB,feelingsMap:{},symptomDates:[]});},8000);function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}window[cb]=data=>{resolve({dates:Array.isArray(data.dates)&&data.dates.length?data.dates:Array.isArray(data.periodDates)&&data.periodDates.length?data.periodDates:PERIOD_DATES_FB,sexDates:Array.isArray(data.sexDates)&&data.sexDates.length?data.sexDates:SEX_DATES_FB,feelingsMap:data.feelingsMap||{},symptomDates:Array.isArray(data.symptomDates)?data.symptomDates:[]});cleanup();};s.onerror=()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB,feelingsMap:{},symptomDates:[]});};s.src=SCRIPT_URL+"?action=read&callback="+cb+"&t="+Date.now();document.head.appendChild(s);});}
-function logDate(type,isoDate){return new Promise((resolve,reject)=>{const cb="log_"+Date.now();const s=document.createElement("script");const t=setTimeout(()=>{cleanup();reject(new Error("Timed out"));},8000);function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}window[cb]=data=>{cleanup();if(data.success)resolve(data);else reject(new Error(data.message));};s.onerror=()=>{cleanup();reject(new Error("Script error"));};s.src=SCRIPT_URL+"?action=log&type="+type+"&date="+isoDate+"&callback="+cb;document.head.appendChild(s);});}
+async function maybeNotify(phase,period,isOverdue,isLastChance,rawDays){
+  if(!("Notification"in window))return;
+  if(Notification.permission==="default")await Notification.requestPermission();
+  if(Notification.permission!=="granted")return;
+  let title="",message="";
+  if(isOverdue){title="Period log overdue 📋";message="It's been "+rawDays+" days. Did her period start? Open the app to log it.";}
+  else if(isLastChance){title="Last chance tonight ⏰";message="Her period starts tomorrow. Tonight is the last opportunity for a while.";}
+  else if(phase.level>=4){title="Tonight's the night 🔥";message="She's at peak desire today. The ovulation window is open.";}
+  else if(phase.level===3&&period.daysUntil<=3){title="Period approaching 🌙";message="Her period is expected in "+period.daysUntil+" days. Desire will be dropping soon.";}
+  if(!message)return;
+  const reg=await navigator.serviceWorker.ready;
+  const fire=new Date();fire.setHours(6,0,0,0);if(fire.getTime()<=Date.now())fire.setDate(fire.getDate()+1);
+  if(reg.active)reg.active.postMessage({type:"SCHEDULE",payload:{title,message,fireAt:fire.getTime()}});
+}
 
 // ── Particles ──────────────────────────────────────────────
 let particleCanvas,particleCtx,particleAnim,monthOffset=0,calState=null;
@@ -363,90 +309,90 @@ function showModal(isoDate){const dt=parseISOLocal(isoDate);const ex=document.ge
 function closeModal(){const el=document.getElementById("modal-overlay");if(el)el.remove();}
 async function handleLog(type,isoDate){const btns=document.getElementById("modal-btns");if(btns)btns.innerHTML=`<div class="modal-saving">Saving...</div>`;try{await logDate(type,isoDate);if(btns)btns.innerHTML=`<div class="modal-success">Saved! Refreshing...</div>`;setTimeout(()=>{closeModal();init();},2000);}catch(e){if(btns)btns.innerHTML=`<div class="modal-error">Could not save. Try again.</div><button class="modal-btn cancel" onclick="closeModal()">Close</button>`;}}
 
+// ── Feelings card ──────────────────────────────────────────
+function buildFeelingsCard(feelingsMap){
+  if(!feelingsMap||!Object.keys(feelingsMap).length)return"";
+  const today=new Date();today.setHours(0,0,0,0);
+  const entries=[];
+  for(let i=0;i<4;i++){
+    const d=new Date(today.getFullYear(),today.getMonth(),today.getDate()-i);
+    const iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const feelings=feelingsMap[iso];
+    if(feelings){
+      const label=i===0?"Today":i===1?"Yesterday":d.toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"});
+      const tags=feelings.split(",").map(f=>f.trim()).filter(Boolean);
+      entries.push({label,tags});
+    }
+  }
+  if(!entries.length)return"";
+  const rows=entries.map(e=>{
+    const pills=e.tags.map(t=>`<span class="feeling-pill">${FEELING_EMOJIS[t]||"💭"} ${t}</span>`).join("");
+    return`<div class="feeling-day"><div class="feeling-day-label">${e.label}</div><div class="feeling-pills">${pills}</div></div>`;
+  }).join("");
+  return`<div class="feelings-card fadein">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div style="width:36px;height:36px;border-radius:10px;background:#fff0f8;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📝</div>
+      <div><div style="font-size:14px;font-weight:500;color:var(--text)">Michelle's recent feelings</div><div style="font-size:11px;color:var(--text3);margin-top:1px">Logged from her cycle app</div></div>
+    </div>${rows}</div>`;}
+
 // ── Stats ──────────────────────────────────────────────────
 function buildStats(dates,sexDates,len){
   const totalCycles=dates.length;
   const sorted=[...sexDates].map(d=>parseISOLocal(d)).sort((a,b)=>a-b);
-  let avgGap="—";
-  if(sorted.length>=2){let t=0;for(let i=1;i<sorted.length;i++)t+=(sorted[i]-sorted[i-1])/86400000;avgGap=Math.round(t/(sorted.length-1))+"d";}
-  let longestGap="—";
-  if(sorted.length>=2){let max=0;for(let i=1;i<sorted.length;i++)max=Math.max(max,(sorted[i]-sorted[i-1])/86400000);longestGap=Math.round(max)+"d";}
-
-  // Phase counts
-  const phaseCounts={};
-  PHASES.forEach(p=>phaseCounts[p.name]=0);
+  let avgGap="—";if(sorted.length>=2){let t=0;for(let i=1;i<sorted.length;i++)t+=(sorted[i]-sorted[i-1])/86400000;avgGap=Math.round(t/(sorted.length-1))+"d";}
+  let longestGap="—";if(sorted.length>=2){let max=0;for(let i=1;i<sorted.length;i++)max=Math.max(max,(sorted[i]-sorted[i-1])/86400000);longestGap=Math.round(max)+"d";}
   const phaseColors={"Menstrual":"#378ADD","Follicular":"#1D9E75","Ovulation":"#D85A30","Luteal":"#BA7517","Late Luteal":"#888780"};
-  let topPhase="—";
+  const phaseCounts={};PHASES.forEach(p=>phaseCounts[p.name]=0);
   const cycleDayCounts=Array(len).fill(0);
-
-  if(sexDates.length&&dates.length){
-    const last=dates[dates.length-1];
-    sexDates.forEach(sd=>{
-      const diff=Math.floor((parseISOLocal(sd)-parseISOLocal(last))/86400000);
-      const adj=((diff%len)+len)%len+1;
-      const ph=getPhase(adj,len);
-      phaseCounts[ph.name]=(phaseCounts[ph.name]||0)+1;
-      if(adj>=1&&adj<=len)cycleDayCounts[adj-1]++;
-    });
-    const top=Object.entries(phaseCounts).sort((a,b)=>b[1]-a[1])[0];
-    if(top&&top[1]>0)topPhase=top[0].replace("Late Luteal","Late Lut.")+" ("+top[1]+")";
-  }
-
+  if(sexDates.length&&dates.length){const last=dates[dates.length-1];sexDates.forEach(sd=>{const diff=Math.floor((parseISOLocal(sd)-parseISOLocal(last))/86400000);const adj=((diff%len)+len)%len+1;const ph=getPhase(adj,len);phaseCounts[ph.name]=(phaseCounts[ph.name]||0)+1;if(adj>=1&&adj<=len)cycleDayCounts[adj-1]++;});}
   const maxPhaseCount=Math.max(1,...Object.values(phaseCounts));
-  const phaseBarHtml=PHASES.map(p=>{
-    const pct=Math.round((phaseCounts[p.name]/maxPhaseCount)*100);
-    const col=phaseColors[p.name];
-    const shortName=p.name==="Late Luteal"?"Late Lut.":p.name==="Follicular"?"Follicular":p.name;
-    return`<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
-      <div style="font-size:11px;font-weight:500;color:${col}">${phaseCounts[p.name]}</div>
-      <div style="width:100%;height:48px;display:flex;align-items:flex-end;justify-content:center">
-        <div style="width:70%;border-radius:4px 4px 0 0;background:${col};height:${Math.max(pct,phaseCounts[p.name]>0?8:0)}%;transition:height 0.8s ease;opacity:0.85"></div>
-      </div>
-      <div style="font-size:9px;color:var(--text3);text-align:center;line-height:1.2">${shortName}</div>
-    </div>`;
-  }).join("");
-
+  const phaseBarHtml=PHASES.map(p=>{const pct=Math.round((phaseCounts[p.name]/maxPhaseCount)*100);const col=phaseColors[p.name];const sn=p.name==="Late Luteal"?"Late Lut.":p.name;return`<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1"><div style="font-size:11px;font-weight:500;color:${col}">${phaseCounts[p.name]}</div><div style="width:100%;height:48px;display:flex;align-items:flex-end;justify-content:center"><div style="width:70%;border-radius:4px 4px 0 0;background:${col};height:${Math.max(pct,phaseCounts[p.name]>0?8:0)}%;opacity:0.85"></div></div><div style="font-size:9px;color:var(--text3);text-align:center;line-height:1.2">${sn}</div></div>`;}).join("");
   const maxDayCount=Math.max(1,...cycleDayCounts);
-  const heatmapHtml=cycleDayCounts.map((count,i)=>{
-    const d=i+1;
-    const ph=getPhase(d,len);
-    const col=phaseColors[ph.name];
-    const opacity=count>0?0.25+(count/maxDayCount)*0.75:0.08;
-    return`<div title="Day ${d}: ${count} time${count!==1?"s":""}" style="flex:1;aspect-ratio:1;border-radius:3px;background:${col};opacity:${opacity};min-width:0;cursor:default"></div>`;
-  }).join("");
-
-  return`<div class="stats-card fadein">
-    <div class="stats-title">Stats</div>
-    <div class="stats-grid">
-      <div class="stat"><div class="stat-val">${totalCycles}</div><div class="stat-lbl">Cycles logged</div></div>
-      <div class="stat"><div class="stat-val">${avgGap}</div><div class="stat-lbl">Avg intimacy gap</div></div>
-      <div class="stat"><div class="stat-val">${longestGap}</div><div class="stat-lbl">Longest gap</div></div>
-    </div>
-    ${sexDates.length>0?`
-    <div style="margin-top:14px;padding-top:12px;border-top:0.5px solid var(--border)">
-      <div style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Intimacy by phase</div>
-      <div style="display:flex;gap:4px;align-items:flex-end">${phaseBarHtml}</div>
-    </div>
-    <div style="margin-top:14px;padding-top:12px;border-top:0.5px solid var(--border)">
-      <div style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Intimacy by cycle day</div>
-      <div style="display:flex;gap:2px;align-items:center">${heatmapHtml}</div>
-      <div style="display:flex;justify-content:space-between;margin-top:4px">
-        <div style="font-size:9px;color:var(--text3)">Day 1</div>
-        <div style="font-size:9px;color:var(--text3)">Day ${len}</div>
-      </div>
-    </div>`:""}
-  </div>`;
-}
+  const heatmapHtml=cycleDayCounts.map((count,i)=>{const d=i+1;const ph=getPhase(d,len);const col=phaseColors[ph.name];const opacity=count>0?0.25+(count/maxDayCount)*0.75:0.08;return`<div title="Day ${d}: ${count} time${count!==1?"s":""}" style="flex:1;aspect-ratio:1;border-radius:3px;background:${col};opacity:${opacity};min-width:0"></div>`;}).join("");
+  return`<div class="stats-card fadein"><div class="stats-title">Stats</div><div class="stats-grid"><div class="stat"><div class="stat-val">${totalCycles}</div><div class="stat-lbl">Cycles logged</div></div><div class="stat"><div class="stat-val">${avgGap}</div><div class="stat-lbl">Avg intimacy gap</div></div><div class="stat"><div class="stat-val">${longestGap}</div><div class="stat-lbl">Longest gap</div></div></div>${sexDates.length>0?`<div style="margin-top:14px;padding-top:12px;border-top:0.5px solid var(--border)"><div style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Intimacy by phase</div><div style="display:flex;gap:4px;align-items:flex-end">${phaseBarHtml}</div></div><div style="margin-top:14px;padding-top:12px;border-top:0.5px solid var(--border)"><div style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Intimacy by cycle day</div><div style="display:flex;gap:2px">${heatmapHtml}</div><div style="display:flex;justify-content:space-between;margin-top:4px"><div style="font-size:9px;color:var(--text3)">Day 1</div><div style="font-size:9px;color:var(--text3)">Day ${len}</div></div></div>`:""}</div>`;}
 
 // ── Calendar ───────────────────────────────────────────────
-function buildCalendar(last,len,sexDates,offset){const now=new Date();const tgt=new Date(now.getFullYear(),now.getMonth()+offset,1);const year=tgt.getFullYear(),month=tgt.getMonth();const isEst=offset>0;const mName=tgt.toLocaleDateString("en-US",{month:"long",year:"numeric"});const firstDay=new Date(year,month,1).getDay();const dim=new Date(year,month+1,0).getDate();const sexSet=new Set(sexDates);let cells=["Su","Mo","Tu","We","Th","Fr","Sa"].map(d=>`<div class="cal-dow">${d}</div>`).join("");for(let i=0;i<firstDay;i++)cells+=`<div></div>`;for(let d=1;d<=dim;d++){const iso=`${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;const isSex=sexSet.has(iso);const cycD=getCycleDay(d,month,year,last,len);const type=getDayType(d,month,year,last,len);const isLC=!isSex&&cycD===len;const isToday=offset===0&&d===now.getDate();let cls="cal-day";if(isSex)cls+=" sex";else if(isLC)cls+=" last-chance";else if(type==="period")cls+=" period";else if(type==="rising")cls+=" rising";else if(type==="peak")cls+=" peak";else if(type==="low")cls+=" low";if(isToday)cls+=" today";let tip="";if(isSex)tip="Intimacy recorded";else if(isLC)tip="Last chance — period starts tomorrow";else if(type==="period")tip="Period day "+cycD+" of 5";else if(type==="rising")tip="Rising desire — good time to initiate";else if(type==="peak")tip="Peak desire — ovulation window";else if(type==="low")tip="Low desire — late luteal phase";else tip="Moderate — post-ovulation";cells+=`<div class="${cls}" onclick="showModal('${iso}')" title="${tip}">${d}${isSex?`<span style="font-size:9px;position:absolute;top:1px;right:1px">😊</span>`:""}</div>`;}
-return`<div class="cal-wrap"><div class="cal-header"><button class="cal-nav" onclick="changeMonth(-1)" ${offset===0?"disabled":""}>&#8249;</button><div class="cal-title-wrap"><div class="cal-title">${mName}</div>${isEst?`<div class="cal-estimate">estimated projection</div>`:""}</div><button class="cal-nav" onclick="changeMonth(1)" ${offset>=6?"disabled":""}>&#8250;</button></div><div class="cal-grid">${cells}</div><div class="cal-hint">Tap any date to log a period or intimacy</div><div class="cal-legend"><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#D85A30"></div>Peak</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#1D9E7522;border:1px solid #1D9E7544"></div>Rising</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#5576D122;border:1px solid #5576D144"></div>Period</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#fff8e6;border:2px solid #f0b429"></div>Last chance</div><div class="cal-legend-item"><span style="font-size:12px">😊</span><span style="margin-left:3px">Intimacy</span></div></div></div>`;}
+function buildCalendar(last,len,sexDates,offset){
+  const now=new Date();const tgt=new Date(now.getFullYear(),now.getMonth()+offset,1);
+  const year=tgt.getFullYear(),month=tgt.getMonth();const isEst=offset>0;
+  const mName=tgt.toLocaleDateString("en-US",{month:"long",year:"numeric"});
+  const firstDay=new Date(year,month,1).getDay(),dim=new Date(year,month+1,0).getDate();
+  const sexSet=new Set(sexDates);
+  let cells=["Su","Mo","Tu","We","Th","Fr","Sa"].map(d=>`<div class="cal-dow">${d}</div>`).join("");
+  for(let i=0;i<firstDay;i++)cells+=`<div></div>`;
+  for(let d=1;d<=dim;d++){
+    const iso=`${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const isSex=sexSet.has(iso),cycD=getCycleDay(d,month,year,last,len),type=getDayType(d,month,year,last,len);
+    const isLC=!isSex&&cycD===len,isToday=offset===0&&d===now.getDate();
+    let cls="cal-day";
+    if(isSex)cls+=" sex";else if(isLC)cls+=" last-chance";else if(type==="period")cls+=" period";else if(type==="rising")cls+=" rising";else if(type==="peak")cls+=" peak";else if(type==="low")cls+=" low";
+    if(isToday)cls+=" today";
+    let tip=isSex?"Intimacy recorded":isLC?"Last chance — period starts tomorrow":type==="period"?"Period day "+cycD+" of 5":type==="rising"?"Rising desire — good time to initiate":type==="peak"?"Peak desire — ovulation window":type==="low"?"Low desire — late luteal phase":"Moderate — post-ovulation";
+    cells+=`<div class="${cls}" onclick="showModal('${iso}')" title="${tip}">${d}${isSex?`<span style="font-size:9px;position:absolute;top:1px;right:1px">😊</span>`:""}</div>`;
+  }
+  return`<div class="cal-wrap"><div class="cal-header"><button class="cal-nav" onclick="changeMonth(-1)" ${offset===0?"disabled":""}>&#8249;</button><div class="cal-title-wrap"><div class="cal-title">${mName}</div>${isEst?`<div class="cal-estimate">estimated projection</div>`:""}</div><button class="cal-nav" onclick="changeMonth(1)" ${offset>=6?"disabled":""}>&#8250;</button></div><div class="cal-grid">${cells}</div><div class="cal-hint">Tap any date to log a period or intimacy</div><div class="cal-legend"><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#D85A30"></div>Peak</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#1D9E7522;border:1px solid #1D9E7544"></div>Rising</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#5576D122;border:1px solid #5576D144"></div>Period</div><div class="cal-legend-item"><div class="cal-legend-dot" style="background:#fff8e6;border:2px solid #f0b429"></div>Last chance</div><div class="cal-legend-item"><span style="font-size:12px">😊</span><span style="margin-left:3px">Intimacy</span></div></div></div>`;
+}
 function changeMonth(dir){monthOffset=Math.max(0,Math.min(6,monthOffset+dir));if(calState)document.getElementById("calContainer").innerHTML=buildCalendar(calState.last,calState.len,calState.sexDates,monthOffset);}
 
 // ── Render ─────────────────────────────────────────────────
 function render(dates,sexDates,feelingsMap){
-  monthOffset=0;const len=avgLen(dates);const last=dates[dates.length-1];const day=cycleDay(last,len);const phase=getPhase(day,len);const best=getBestDays(day,len);const next=best[0];const soonHot=next&&next.daysFrom>0&&next.daysFrom<=3;const period=getNextPeriod(day,len);const periodSoon=period.daysUntil<=4;const today=new Date();today.setHours(0,0,0,0);const safe=Array.isArray(sexDates)?sexDates:[];const lastSex=safe.length?parseISOLocal(safe[safe.length-1]):null;const daysSince=lastSex?Math.floor((today-lastSex)/86400000):999;const inCooldown=daysSince<3;const showSmiley=daysSince<=2;const lastSexStr=lastSex?lastSex.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"}):null;let effLevel=phase.level;if(inCooldown)effLevel=Math.max(1,phase.level-2);const onPeriod=phase.name==="Menstrual";const todayHot=!onPeriod&&effLevel>=4;const todayWarm=!onPeriod&&effLevel===3;const recentOnHot=inCooldown&&phase.level>=3&&!onPeriod;const rawDays=Math.floor((today-parseISOLocal(last))/86400000)+1;const isLC=!onPeriod&&period.daysUntil===1;const isOverdue=rawDays>len&&!onPeriod;
+  monthOffset=0;
+  const len=avgLen(dates),last=dates[dates.length-1],day=cycleDay(last,len),phase=getPhase(day,len);
+  const best=getBestDays(day,len),next=best[0],soonHot=next&&next.daysFrom>0&&next.daysFrom<=3;
+  const period=getNextPeriod(day,len),periodSoon=period.daysUntil<=4;
+  const today=new Date();today.setHours(0,0,0,0);
+  const safe=Array.isArray(sexDates)?sexDates:[];
+  const lastSex=safe.length?parseISOLocal(safe[safe.length-1]):null;
+  const daysSince=lastSex?Math.floor((today-lastSex)/86400000):999;
+  const inCooldown=daysSince<3,showSmiley=daysSince<=2;
+  const lastSexStr=lastSex?lastSex.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"}):null;
+  let effLevel=phase.level;if(inCooldown)effLevel=Math.max(1,phase.level-2);
+  const onPeriod=phase.name==="Menstrual",todayHot=!onPeriod&&effLevel>=4,todayWarm=!onPeriod&&effLevel===3;
+  const recentOnHot=inCooldown&&phase.level>=3&&!onPeriod;
+  const rawDays=Math.floor((today-parseISOLocal(last))/86400000)+1;
+  const isLC=!onPeriod&&period.daysUntil===1,isOverdue=rawDays>len&&!onPeriod;
   calState={last,len,sexDates:safe};
+
   let banner="";
   if(isOverdue)banner=`<div class="hot-banner fadein" style="margin-bottom:1rem;background:linear-gradient(135deg,#888780,#5f5e5a)"><div class="banner-pulse"></div><div class="banner-icon">📋</div><div class="banner-title">Period log overdue</div><div class="banner-sub">It's been ${rawDays} days since her last period. Did she start? Tap the calendar to log it.</div></div>`;
   else if(onPeriod)banner=`<div class="hot-banner fadein" style="margin-bottom:1rem;background:linear-gradient(135deg,#5576D1,#3a54a0)"><div class="banner-pulse"></div><div class="banner-icon">🌙</div><div class="banner-title">Period day ${day} of 5</div><div class="banner-sub">She's on her period. Not a good time to initiate.</div></div>`;
@@ -454,8 +400,10 @@ function render(dates,sexDates,feelingsMap){
   else if(todayHot)banner=`<div class="hot-banner fadein" style="margin-bottom:1rem;background:linear-gradient(135deg,#ff6b35,#d85a30)"><div class="banner-pulse"></div><div class="banner-icon">🔥</div><div class="banner-title">Tonight's the night</div><div class="banner-sub">She's at peak desire. The ovulation window is open.</div></div>`;
   else if(todayWarm)banner=`<div class="hot-banner fadein" style="margin-bottom:1rem;background:linear-gradient(135deg,#2ecc9a,#1D9E75)"><div class="banner-pulse"></div><div class="banner-icon">⚡</div><div class="banner-title">Good time to initiate</div><div class="banner-sub">Desire is rising. Conditions are favorable.</div></div>`;
   else if(isLC)banner=`<div class="hot-banner fadein" style="margin-bottom:1rem;background:linear-gradient(135deg,#f0b429,#8a6000)"><div class="banner-pulse"></div><div class="banner-icon">⏰</div><div class="banner-title">Last chance tonight</div><div class="banner-sub">Her period starts tomorrow. Tonight is the last opportunity for a while.</div></div>`;
+
   let alerts="";
   if(!onPeriod&&!isOverdue){if(soonHot&&!isLC)alerts+=`<div class="alert alert-desire fadein"><div class="alert-dot" style="background:#D85A30"></div><p><strong>Heads up</strong> — a high-desire window is ${next.daysFrom===1?"tomorrow":"in "+next.daysFrom+" days"} (${next.dateStr}).</p></div>`;if(periodSoon&&!isLC)alerts+=`<div class="alert alert-period fadein"><div class="alert-dot" style="background:#5576D1"></div><p><strong>Period approaching</strong> — expected ${period.daysUntil===1?"tomorrow":"in "+period.daysUntil+" days"} (${period.dateStr}). Desire will be low.</p></div>`;if(!soonHot&&!periodSoon&&phase.level<=1)alerts+=`<div class="alert alert-period fadein"><div class="alert-dot" style="background:#888780"></div><p>Next period expected in <strong>${period.daysUntil} days</strong> (${period.dateStr}).</p></div>`;}
+
   const chips=!onPeriod&&!isOverdue?`<div class="best-card fadein"><div class="best-title">✦ Peak days to initiate ✦</div><div class="day-chips">${best.map(({daysFrom,dt})=>{const ac="#D85A30";return`<div class="chip" style="border:1px solid ${ac}${daysFrom===0?"":"55"};background:${daysFrom===0?ac+"18":"var(--bg3)"}"><div class="chip-dow">${daysFrom===0?"Today":daysFrom===1?"Tomorrow":dt.toLocaleDateString("en-US",{weekday:"long"})}</div><div class="chip-date" style="color:${ac}">${dt.getDate()}</div><div class="chip-month">${dt.toLocaleDateString("en-US",{month:"short"})}</div><div class="chip-label" style="background:${ac}18;color:${ac}">Peak</div><div class="chip-peak-dot" style="color:${ac}">●</div></div>`;}).join("")}</div></div>`:"";
 
   document.getElementById("content").innerHTML=`<div class="fadein">
@@ -488,7 +436,7 @@ function render(dates,sexDates,feelingsMap){
   </div>`;
 
   setTimeout(()=>{const f=document.getElementById("gaugeFill");if(f)f.style.width=Math.max(8,((phase.level-1)/4)*100)+"%";if(phase.level>=3){const c=document.getElementById("pCanvas");if(c)startParticles(c,phase);}},100);
-  maybeNotify(phase, period, isOverdue, isLC, rawDays);
+  maybeNotify(phase,period,isOverdue,isLC,rawDays);
 }
 
 // ── Init ───────────────────────────────────────────────────
