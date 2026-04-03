@@ -215,6 +215,7 @@ const CORRECT_PIN = "1540";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH9kfinqrkm21mARfGV7fg8axdvwitaxzEF2GV4PO-Tdv2cBFSkmkr5a5pYMDKRyN8/exec";
 const PERIOD_DATES_FB = ["2025-07-02","2025-07-30","2025-08-23","2025-09-20","2025-10-16","2025-11-10","2025-12-09","2026-01-02","2026-01-28","2026-02-23","2026-03-26"];
 const SEX_DATES_FB = ["2026-03-23"];
+const FEELING_EMOJIS = {"Happy":"😊","Energized":"⚡","Calm":"😌","Affectionate":"🥰","Horny":"🔥","Neutral":"😐","Tired":"😴","Foggy / Low focus":"🧠","Stressed":"😮‍💨","Emotional":"😢","Irritable":"😠","Cramping":"🤕","Bloated":"🫠","Headachey":"🤯","Breast Tenderness":"🎀","Nauseous":"🤢"};
 
 // ── Theme ──────────────────────────────────────────────────
 function applyTheme(dark) {
@@ -349,7 +350,7 @@ async function maybeNotify(phase, period, isOverdue, isLastChance, rawDays) {
   }
   if (message) scheduleNotification(title, message);
 }
-function fetchDates(){return new Promise(resolve=>{const cb="cb_"+Date.now();const s=document.createElement("script");const t=setTimeout(()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB});},8000);function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}window[cb]=data=>{resolve({dates:Array.isArray(data.dates)&&data.dates.length?data.dates:Array.isArray(data.periodDates)&&data.periodDates.length?data.periodDates:PERIOD_DATES_FB,sexDates:Array.isArray(data.sexDates)&&data.sexDates.length?data.sexDates:SEX_DATES_FB});cleanup();};s.onerror=()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB});};s.src=SCRIPT_URL+"?action=read&callback="+cb+"&t="+Date.now();document.head.appendChild(s);});}
+function fetchDates(){return new Promise(resolve=>{const cb="cb_"+Date.now();const s=document.createElement("script");const t=setTimeout(()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB,feelingsMap:{},symptomDates:[]});},8000);function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}window[cb]=data=>{resolve({dates:Array.isArray(data.dates)&&data.dates.length?data.dates:Array.isArray(data.periodDates)&&data.periodDates.length?data.periodDates:PERIOD_DATES_FB,sexDates:Array.isArray(data.sexDates)&&data.sexDates.length?data.sexDates:SEX_DATES_FB,feelingsMap:data.feelingsMap||{},symptomDates:Array.isArray(data.symptomDates)?data.symptomDates:[]});cleanup();};s.onerror=()=>{cleanup();resolve({dates:PERIOD_DATES_FB,sexDates:SEX_DATES_FB,feelingsMap:{},symptomDates:[]});};s.src=SCRIPT_URL+"?action=read&callback="+cb+"&t="+Date.now();document.head.appendChild(s);});}
 function logDate(type,isoDate){return new Promise((resolve,reject)=>{const cb="log_"+Date.now();const s=document.createElement("script");const t=setTimeout(()=>{cleanup();reject(new Error("Timed out"));},8000);function cleanup(){delete window[cb];if(s.parentNode)s.parentNode.removeChild(s);clearTimeout(t);}window[cb]=data=>{cleanup();if(data.success)resolve(data);else reject(new Error(data.message));};s.onerror=()=>{cleanup();reject(new Error("Script error"));};s.src=SCRIPT_URL+"?action=log&type="+type+"&date="+isoDate+"&callback="+cb;document.head.appendChild(s);});}
 
 // ── Particles ──────────────────────────────────────────────
@@ -443,7 +444,7 @@ return`<div class="cal-wrap"><div class="cal-header"><button class="cal-nav" onc
 function changeMonth(dir){monthOffset=Math.max(0,Math.min(6,monthOffset+dir));if(calState)document.getElementById("calContainer").innerHTML=buildCalendar(calState.last,calState.len,calState.sexDates,monthOffset);}
 
 // ── Render ─────────────────────────────────────────────────
-function render(dates,sexDates){
+function render(dates,sexDates,feelingsMap){
   monthOffset=0;const len=avgLen(dates);const last=dates[dates.length-1];const day=cycleDay(last,len);const phase=getPhase(day,len);const best=getBestDays(day,len);const next=best[0];const soonHot=next&&next.daysFrom>0&&next.daysFrom<=3;const period=getNextPeriod(day,len);const periodSoon=period.daysUntil<=4;const today=new Date();today.setHours(0,0,0,0);const safe=Array.isArray(sexDates)?sexDates:[];const lastSex=safe.length?parseISOLocal(safe[safe.length-1]):null;const daysSince=lastSex?Math.floor((today-lastSex)/86400000):999;const inCooldown=daysSince<3;const showSmiley=daysSince<=2;const lastSexStr=lastSex?lastSex.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"}):null;let effLevel=phase.level;if(inCooldown)effLevel=Math.max(1,phase.level-2);const onPeriod=phase.name==="Menstrual";const todayHot=!onPeriod&&effLevel>=4;const todayWarm=!onPeriod&&effLevel===3;const recentOnHot=inCooldown&&phase.level>=3&&!onPeriod;const rawDays=Math.floor((today-parseISOLocal(last))/86400000)+1;const isLC=!onPeriod&&period.daysUntil===1;const isOverdue=rawDays>len&&!onPeriod;
   calState={last,len,sexDates:safe};
   let banner="";
@@ -482,6 +483,7 @@ function render(dates,sexDates){
       <div class="desktop-right"><div id="calContainer">${buildCalendar(last,len,safe,0)}</div></div>
     </div>
     <div class="footer">Avg cycle: ${len} days · <a onclick="init()">Refresh</a></div>
+    ${buildFeelingsCard(feelingsMap||{})}
     ${buildStats(dates,safe,len)}
   </div>`;
 
@@ -493,8 +495,8 @@ function render(dates,sexDates){
 async function init(){
   stopParticles();
   document.getElementById("content").innerHTML=`<div class="loading">Reading cycle data...<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
-  const{dates,sexDates}=await fetchDates();
-  render(dates,sexDates);
+  const{dates,sexDates,feelingsMap}=await fetchDates();
+  render(dates,sexDates,feelingsMap);
 }
 
 if(sessionStorage.getItem("unlocked")==="1"){registerSW();init();}
