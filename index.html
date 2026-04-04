@@ -102,7 +102,8 @@
   .cal-legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:0.85rem;justify-content:center;}
   .cal-legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);}
   .cal-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
-  .leg-chip{font-size:12px;font-weight:500;padding:5px 11px;border-radius:100px;cursor:default;user-select:none;}
+  .leg-chip{font-size:12px;font-weight:500;padding:5px 11px;border-radius:100px;cursor:pointer;user-select:none;transition:opacity 0.15s;}
+  .leg-chip:active{opacity:0.7;}
   .feelings-card{background:var(--card-bg);border-radius:16px;border:1px solid var(--border);padding:1.25rem;margin-top:1rem;}
   .feelings-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;text-align:center;}
   .feeling-day{margin-bottom:10px;}
@@ -245,7 +246,46 @@ function classifyDay(d,len){if(d<=5)return"period";const p=d/len;if(p<=0.46)retu
 function getCycleDay(calDay,month,year,last,len){const diff=Math.floor((new Date(year,month,calDay)-parseISOLocal(last))/86400000);return((diff%len)+len)%len+1;}
 function getDayType(calDay,month,year,last,len){return classifyDay(getCycleDay(calDay,month,year,last,len),len);}
 
-// ── Fetch ──────────────────────────────────────────────────
+const PHASE_INFO = {
+  period:     { emoji:"🌙", name:"Period", days:"Days 1–5",     bg:"#E8D4EE", color:"#7B4F8E", how:"She's in her lowest energy phase. Hormones are at their minimum and she may feel crampy, tired, bloated or emotionally sensitive.", libido:"Her libido is essentially offline right now and any pressure to be intimate will likely land badly.", action:"Be her comfort. Handle things without being asked, bring warmth and food and ask nothing in return." },
+  follicular: { emoji:"🌸", name:"Follicular", days:"Days 6–12", bg:"#EEF3F8", color:"#7A99B8", how:"Estrogen is rising and she's starting to feel like herself again. Energy is returning, her mood is lifting and she's becoming more social and open.", libido:"Her libido is beginning to stir quietly. She's receptive to connection but not quite at peak drive yet.", action:"This is a great time for quality time, light flirting and making plans together." },
+  fertile:    { emoji:"🌿", name:"Fertile Window", days:"Days 10–12", bg:"#FDEAE0", color:"#D4845A", how:"Estrogen is climbing fast and she may feel more attractive, more talkative and more interested in closeness.", libido:"Desire is noticeably rising. Her body is naturally priming for connection in the window just before ovulation.", action:"Be attentive, plan something intentional and don't hesitate to be a little more forward than usual." },
+  ovulation:  { emoji:"✨", name:"Ovulation", days:"Days 13–15", bg:"#F7C5D2", color:"#E8678A", how:"Peak phase. Estrogen and testosterone are surging and she's at her most confident, magnetic and energetic.", libido:"Libido is at its highest point in the cycle. She's drawn toward intimacy naturally right now so boldness works in your favor.", action:"Plan something special, be present and take the lead. This is your best window of the entire cycle." },
+  luteal:     { emoji:"🍂", name:"Luteal", days:"Days 16–24",   bg:"#C8E6D4", color:"#5FA67A", how:"Progesterone has taken over and her energy is tapering. She may crave comfort, routine and quieter evenings.", libido:"Libido begins to decline during this phase. Grand gestures are less likely to land well.", action:"Acts of service matter more here. Check in on her, take things off her plate and keep the vibe calm and steady." },
+  pms:        { emoji:"🌧", name:"PMS", days:"Days 25–28",      bg:"#C8DDF0", color:"#5B8DB8", how:"Hormones are dropping sharply ahead of her period. She may feel irritable, anxious, bloated or emotionally raw.", libido:"Libido is very low and initiating is unlikely to go well right now.", action:"Be patient, predictable and low-maintenance. Avoid big conversations, reduce her stress and just be a steady presence." }
+};
+
+function openPhaseInfo(key) {
+  const p = PHASE_INFO[key];
+  if (!p) return;
+  const existing = document.getElementById("modal-overlay");
+  if (existing) existing.remove();
+  const o = document.createElement("div");
+  o.className = "modal-overlay";
+  o.id = "modal-overlay";
+  o.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeUp 0.2s ease";
+  o.innerHTML = `<div style="background:var(--card-bg);border-radius:20px;padding:1.5rem;width:min(340px,90vw);max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.3)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">
+      <div style="width:44px;height:44px;border-radius:12px;background:${p.bg};display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">${p.emoji}</div>
+      <div><div style="font-size:16px;font-weight:500;color:var(--text)">${p.name}</div><div style="font-size:12px;color:var(--text3);margin-top:1px">${p.days}</div></div>
+    </div>
+    <div style="background:${p.bg};border-radius:12px;padding:0.85rem 1rem;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:${p.color};margin-bottom:5px">How she's feeling</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.55">${p.how}</div>
+    </div>
+    <div style="background:var(--bg3);border-radius:12px;padding:0.85rem 1rem;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text2);margin-bottom:5px">Her libido</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.55">${p.libido}</div>
+    </div>
+    <div style="background:#fff8e6;border-radius:12px;padding:0.85rem 1rem;margin-bottom:14px;border:1px solid #f0b42933">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#8a6000;margin-bottom:5px">How to show up</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.55">${p.action}</div>
+    </div>
+    <button onclick="document.getElementById('modal-overlay').remove()" style="width:100%;padding:12px;border-radius:12px;border:0.5px solid var(--border);background:var(--bg3);color:var(--text2);font-size:14px;cursor:pointer">Close</button>
+  </div>`;
+  o.addEventListener("click", e => { if (e.target === o) o.remove(); });
+  document.body.appendChild(o);
+}
 function fetchDates(){
   return new Promise(resolve=>{
     const cb="cb_"+Date.now();
@@ -403,14 +443,14 @@ function buildCalendar(last,len,sexDates,offset){
     <div class="cal-grid">${cells}</div>
     <div class="cal-hint">Tap any date to log a period or intimacy</div>
     <div class="cal-legend">
-      <span class="leg-chip" style="background:#E8D4EE;color:#7B4F8E">🌙 Period</span>
-      <span class="leg-chip" style="background:#EEF3F8;color:#7A99B8">🌸 Follicular</span>
-      <span class="leg-chip" style="background:#FDEAE0;color:#D4845A">🌿 Fertile</span>
-      <span class="leg-chip" style="background:#F7C5D2;color:#E8678A">✨ Ovulation</span>
-      <span class="leg-chip" style="background:#C8E6D4;color:#5FA67A">🍂 Luteal</span>
-      <span class="leg-chip" style="background:#C8DDF0;color:#5B8DB8">🌧 PMS</span>
-      <span class="leg-chip" style="background:#fff8e6;color:#8a6000;border:1px solid #f0b429">⏰ Last chance</span>
-      <span class="leg-chip" style="background:#fff0f8;color:#cc6699;border:1px solid #e8a0cc">😊 Intimacy</span>
+      <span class="leg-chip" onclick="openPhaseInfo('period')"     style="background:#E8D4EE;color:#7B4F8E">🌙 Period</span>
+      <span class="leg-chip" onclick="openPhaseInfo('follicular')" style="background:#EEF3F8;color:#7A99B8">🌸 Follicular</span>
+      <span class="leg-chip" onclick="openPhaseInfo('fertile')"    style="background:#FDEAE0;color:#D4845A">🌿 Fertile</span>
+      <span class="leg-chip" onclick="openPhaseInfo('ovulation')"  style="background:#F7C5D2;color:#E8678A">✨ Ovulation</span>
+      <span class="leg-chip" onclick="openPhaseInfo('luteal')"     style="background:#C8E6D4;color:#5FA67A">🍂 Luteal</span>
+      <span class="leg-chip" onclick="openPhaseInfo('pms')"        style="background:#C8DDF0;color:#5B8DB8">🌧 PMS</span>
+      <span class="leg-chip" style="background:#fff8e6;color:#8a6000;border:1px solid #f0b429;cursor:default">⏰ Last chance</span>
+      <span class="leg-chip" style="background:#fff0f8;color:#cc6699;border:1px solid #e8a0cc;cursor:default">😊 Intimacy</span>
     </div>
   </div>`;
 }
