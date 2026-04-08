@@ -205,15 +205,19 @@ function toggleTheme(){const d=document.documentElement.classList.contains("dark
 
 // ── PIN ────────────────────────────────────────────────────
 let pinEntry="";
+// ── Haptic ─────────────────────────────────────────────────
+function haptic(pattern){if(navigator.vibrate)navigator.vibrate(pattern);}
+
 function pinPress(digit){
   if(pinEntry.length>=4)return;
+  haptic(10);
   pinEntry+=digit;updatePinDots();
   if(pinEntry.length===4){
-    if(pinEntry===CORRECT_PIN){sessionStorage.setItem("unlocked","1");document.getElementById("pin-overlay").style.display="none";registerSW();init();}
-    else{const dots=document.getElementById("pin-dots");dots.style.animation="shake 0.4s ease";document.getElementById("pin-error").textContent="Incorrect PIN. Try again.";setTimeout(()=>{dots.style.animation="";pinEntry="";updatePinDots();},400);}
+    if(pinEntry===CORRECT_PIN){haptic([20,50,20]);sessionStorage.setItem("unlocked","1");document.getElementById("pin-overlay").style.display="none";registerSW();init();}
+    else{haptic([50,30,50,30,50]);const dots=document.getElementById("pin-dots");dots.style.animation="shake 0.4s ease";document.getElementById("pin-error").textContent="Incorrect PIN. Try again.";setTimeout(()=>{dots.style.animation="";pinEntry="";updatePinDots();},400);}
   }
 }
-function pinDel(){pinEntry=pinEntry.slice(0,-1);updatePinDots();document.getElementById("pin-error").textContent="";}
+function pinDel(){haptic(10);pinEntry=pinEntry.slice(0,-1);updatePinDots();document.getElementById("pin-error").textContent="";}
 function updatePinDots(){for(let i=0;i<4;i++)document.getElementById("d"+i).classList.toggle("filled",i<pinEntry.length);}
 document.addEventListener("keydown",e=>{const o=document.getElementById("pin-overlay");if(!o||o.style.display==="none")return;if(e.key>="0"&&e.key<="9")pinPress(e.key);else if(e.key==="Backspace")pinDel();});
 if(sessionStorage.getItem("unlocked")==="1"){document.getElementById("pin-overlay").style.display="none";}
@@ -355,8 +359,8 @@ function showModal(isoDate){
 function closeModal(){const el=document.getElementById("modal-overlay");if(el)el.remove();}
 async function handleLog(type,isoDate){
   const btns=document.getElementById("modal-btns");if(btns)btns.innerHTML=`<div class="modal-saving">Saving...</div>`;
-  try{await logDate(type,isoDate);if(btns)btns.innerHTML=`<div class="modal-success">Saved! Refreshing...</div>`;setTimeout(()=>{closeModal();init();},2000);}
-  catch(e){if(btns)btns.innerHTML=`<div class="modal-error">Could not save. Try again.</div><button class="modal-btn cancel" onclick="closeModal()">Close</button>`;}
+  try{await logDate(type,isoDate);haptic([30,50,30,50,80]);if(btns)btns.innerHTML=`<div class="modal-success">Saved! Refreshing...</div>`;setTimeout(()=>{closeModal();init();},2000);}
+  catch(e){haptic([80,40,80]);if(btns)btns.innerHTML=`<div class="modal-error">Could not save. Try again.</div><button class="modal-btn cancel" onclick="closeModal()">Close</button>`;}
 }
 
 // ── Feelings card ──────────────────────────────────────────
