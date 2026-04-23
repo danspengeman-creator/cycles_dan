@@ -237,7 +237,7 @@ const PHASES=[
 function getPhase(day,len){return PHASES.find(p=>day/len<=p.maxPct)||PHASES[4];}
 function getPhaseRange(phase,len){const idx=PHASES.indexOf(phase);const prev=idx>0?PHASES[idx-1]:null;const start=prev?Math.floor(prev.maxPct*len)+1:1;const end=Math.min(Math.floor(phase.maxPct*len),len);return"Days "+start+"\u2013"+end;}
 function parseISOLocal(str){const[y,m,d]=str.split("-").map(Number);return new Date(y,m-1,d);}
-function cycleDay(last,len){return(Math.floor((Date.now()-parseISOLocal(last).getTime())/86400000)%len)+1;}
+function cycleDay(last,len){const d=Math.floor((Date.now()-parseISOLocal(last).getTime())/86400000)+1;return Math.min(d,len);}
 function avgLen(dates){if(dates.length<2)return 28;const s=dates.map(d=>parseISOLocal(d)).sort((a,b)=>a-b);let t=0;for(let i=1;i<s.length;i++)t+=(s[i]-s[i-1])/86400000;return Math.round(t/(s.length-1));}
 function getBestDays(day,len){const out=[];for(let o=0;o<=len&&out.length<3;o++){const d=((day-1+o)%len)+1,pct=d/len;if(pct>0.46&&pct<=0.57){const dt=new Date();dt.setDate(dt.getDate()+o);out.push({daysFrom:o,dt});}}return out;}
 function getNextPeriod(day,len){const du=len-day+1,dt=new Date();dt.setDate(dt.getDate()+du);return{daysUntil:du,dateStr:dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})};}
@@ -406,7 +406,8 @@ function buildCalendar(last,len,sexDates,signalDates,offset){
   function getDayClass(d){
     const dt=new Date(year,month,d);
     const daysSince=Math.floor((dt-lastPeriod)/86400000);
-    const cycD=((daysSince%len)+len)%len+1;
+    // For current/future dates beyond cycle length, cap at len (stay in PMS) rather than wrapping
+    const cycD=daysSince>=0&&daysSince>=len?len:((daysSince%len)+len)%len+1;
     if(cycD<=5)return"period";
     if(cycD>=ovDay-2&&cycD<=ovDay)return"ovulation";
     if(cycD>=ovDay-5&&cycD<ovDay-2)return"fertile";
@@ -423,7 +424,7 @@ function buildCalendar(last,len,sexDates,signalDates,offset){
     const isSex=sexSet.has(iso),isSignal=signalSet.has(iso);
     const pc=getDayClass(d),isToday=offset===0&&d===now.getDate();
     const daysSince=Math.floor((new Date(year,month,d)-lastPeriod)/86400000);
-    const cycD=((daysSince%len)+len)%len+1;
+    const cycD=daysSince>=0&&daysSince>=len?len:((daysSince%len)+len)%len+1;
     const cls="cal-day"+(isSex?" sex":pc?" "+pc:"")+(isToday?" today":"");
     const tipMap={"period":"Period day "+cycD+" of 5","ovulation":"Peak desire — ovulation window","fertile":"Fertile window — desire rising","follicular":"Follicular phase — energy returning","luteal":"Luteal phase — winding down","pms":"Late luteal / PMS phase"};
     const tip=isSex?"Intimacy recorded":(tipMap[pc]||"");
